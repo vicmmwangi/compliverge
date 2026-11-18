@@ -95,7 +95,7 @@
   --navy:#042348;--navy-line:#0a3a6b;--navy-bright:#0f5aa0;
   --brand-deep:#021a38;--brand:#042348;--brand-bright:#0f5aa0;--brand-soft:#E7EDF4;
   --burgundy:#6c0a1b;--green:#57a53d;
-  --silver:#C4C9CF;--silver-soft:#EDEFF2;--ink:#172233;--ink-2:#48546b;--ink-3:#8791a3;
+  --silver:#C4C9CF;--silver-soft:#EDEFF2;--ink:#172233;--ink-2:#48546b;--ink-3:#667085;
   --canvas:#F5F6F9;--white:#FFFFFF;--line:#E2E7EF;
   --ok:#57a53d;--ok-bg:#E9F4E4;         /* Monitor / Up to date */
   --warn:#2E6094;--warn-bg:#E4EDF5;     /* CA / Due soon, steel blue */
@@ -261,6 +261,8 @@ html.dark .lp-section .lead,html.dark .lp-hero .sub{color:var(--ink-2)}
 .login-partner a:hover{color:#fff;text-decoration:underline;text-shadow:0 0 9px rgba(207,224,245,.75)}
 .cv-cookie{position:fixed;left:16px;right:16px;bottom:16px;z-index:200;max-width:600px;margin:0 auto;background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:13px 16px;font-size:12.5px;color:var(--ink-2);align-items:center;gap:12px;flex-wrap:wrap}
 .cv-cookie a{color:var(--navy);font-weight:600;text-decoration:none}
+:focus-visible{outline:2px solid var(--navy-bright);outline-offset:2px;border-radius:5px}
+.btn:focus-visible,.btn-login:focus-visible,.lp-btn:focus-visible,.send:focus-visible,.icon-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
 @media(max-width:920px){
   #login,#oplogin{flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:68px 0 36px}
   #login .login-split,#oplogin .login-split{grid-template-columns:1fr;max-width:420px;width:100%;gap:16px;padding:0 20px;margin:0 auto}
@@ -4113,8 +4115,8 @@ async function aiConfirmAction(tok){
   const f=action.fields||{}; const op=(action.op||'').toLowerCase();
   try{
     if(op==='create'){
-      if(!f.req||!f.owner||!f.freq||!f.expiry){toast('Missing details','Needs obligation, responsible person, frequency and due date');return;}
-      const row={account_id:CUR.accountId,cat:f.cat||'General',req:f.req,descr:f.descr||'',dept:f.dept||'',owner:f.owner,
+      if(!f.req||!f.freq||!f.expiry){toast('Missing details','Needs the obligation, frequency and due date');return;}
+      const row={account_id:CUR.accountId,cat:f.cat||'General',req:f.req,descr:f.descr||'',dept:f.dept||'',owner:f.owner||'Unassigned',
         country:f.country||'',county:f.county||'',sector:f.sector||'',facility:f.facility||'',prio:f.prio||'med',
         freq:f.freq,issue:f.issue||null,expiry:f.expiry||null,remind_months:(Array.isArray(f.remind_months)&&f.remind_months.length)?f.remind_months:[3,6]};
       const {data,error}=await sb.from('reminders').insert(row).select().single(); if(error)throw error;
@@ -4202,6 +4204,26 @@ async function deleteMyAccount(){
 }
 function cvCookieOk(){try{localStorage.setItem('cv-cookie-ok','1')}catch(e){}var b=document.getElementById('cvCookie');if(b)b.style.display='none';}
 window.addEventListener('load',function(){try{if(localStorage.getItem('cv-cookie-ok'))return;}catch(e){}var b=document.getElementById('cvCookie');if(b){b.style.display='flex';if(window.lucide)lucide.createIcons();}});
+/* Accessibility: make every clickable element keyboard-reachable and operable */
+(function(){
+  function wireA11y(){
+    var els=document.querySelectorAll('[onclick]');
+    for(var i=0;i<els.length;i++){var el=els[i],t=el.tagName.toLowerCase();
+      if(t==='button'||t==='a'||t==='input'||t==='select'||t==='textarea'||t==='label')continue;
+      if(!el.hasAttribute('tabindex'))el.setAttribute('tabindex','0');
+      if(!el.hasAttribute('role'))el.setAttribute('role','button');
+    }
+  }
+  var pend=false;
+  function schedule(){if(pend)return;pend=true;setTimeout(function(){pend=false;try{wireA11y();}catch(e){}},400);}
+  window.addEventListener('load',function(){try{wireA11y();new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});}catch(e){}});
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Enter'&&e.key!==' ')return;
+    var el=document.activeElement;if(!el||!el.hasAttribute('onclick'))return;
+    var t=el.tagName.toLowerCase();if(t==='button'||t==='a'||t==='input'||t==='select'||t==='textarea')return;
+    e.preventDefault();el.click();
+  });
+})();
 document.addEventListener('DOMContentLoaded',bootstrap);
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.shiftKey&&(e.key==='O'||e.key==='o')){var lg=document.getElementById('login');if(lg&&!lg.classList.contains('hidden')){e.preventDefault();openOperatorGate();}}});
 
