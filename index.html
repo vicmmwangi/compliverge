@@ -170,11 +170,19 @@ input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
 .login-msg.err{background:rgba(214,64,64,.18);border:1px solid rgba(240,120,120,.45);color:#ffdada}
 .login-msg.warn{background:rgba(224,160,48,.16);border:1px solid rgba(240,190,90,.45);color:#ffe9c2}
 .login-msg a{color:#fff;font-weight:600;text-decoration:underline;cursor:pointer}
+.login-msg.info{background:rgba(70,130,210,.15);border:1px solid rgba(120,170,235,.4);color:#d9e8ff}
+.login-help{text-align:center;margin-top:8px;font-size:12px}
+.login-help a{color:#a9c0dc;text-decoration:none;cursor:pointer}
+.login-help a:hover{color:#fff}
+.oplogin-badge{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#f0b6c0;background:rgba(108,10,27,.3);border:1px solid rgba(190,60,80,.4);padding:5px 11px;border-radius:20px;margin-bottom:12px}
+.oplogin-badge svg{width:13px;height:13px}
+#oplogin .hf-ic{background:rgba(108,10,27,.22);border-color:rgba(190,60,80,.38)}
+#oplogin .hf-ic svg,#oplogin .hero-trust svg{color:#ec9aa9}
 .btn-login{width:100%;height:48px;border-radius:12px;background:linear-gradient(135deg,#0f5aa0,#042348);color:#fff;font-weight:600;font-size:14.5px;box-shadow:0 12px 28px rgba(4,35,72,.55);transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .btn-login:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(4,35,72,.65)}
 /* ---- login two-pane layout ---- */
-#login .login-split{position:relative;z-index:3;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;width:100%;max-width:1140px;padding:0 clamp(24px,5vw,56px);align-items:center}
+#login .login-split,#oplogin .login-split{position:relative;z-index:3;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;width:100%;max-width:1140px;padding:0 clamp(24px,5vw,56px);align-items:center}
 .login-hero{color:#fff;max-width:540px}
 .login-hero .login-brand{position:static;top:auto;left:auto;margin-bottom:32px}
 .hero-h{font-family:'Poppins';font-weight:700;font-size:clamp(26px,3vw,36px);line-height:1.14;letter-spacing:-.01em;color:#fff;margin:0 0 14px}
@@ -193,8 +201,8 @@ input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
 .login-partner a{color:#cfe0f5;font-weight:600;text-decoration:none;border-bottom:1px solid rgba(207,224,245,.45);padding-bottom:1px}
 .login-partner a:hover{color:#fff;border-color:#fff}
 @media(max-width:920px){
-  #login{flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:68px 0 36px}
-  #login .login-split{grid-template-columns:1fr;max-width:420px;width:100%;gap:16px;padding:0 20px;margin:0 auto}
+  #login,#oplogin{flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:68px 0 36px}
+  #login .login-split,#oplogin .login-split{grid-template-columns:1fr;max-width:420px;width:100%;gap:16px;padding:0 20px;margin:0 auto}
   .login-hero{max-width:none;text-align:center;display:flex;flex-direction:column;align-items:center}
   .login-hero .login-brand{display:flex;justify-content:center;width:100%;margin-bottom:2px}
   .login-hero .login-brand .logo{justify-content:center}
@@ -834,6 +842,7 @@ select.mini-ctrl{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg 
         <div id="liMsg" class="login-msg" style="display:none"></div>
         <button class="btn-login" onclick="doLogin()"><i data-lucide="log-in"></i> Sign in</button>
         <p style="text-align:center;margin-top:16px;font-size:12.5px;color:#c3d5ec">New to CompliVerge? <a href="#" onclick="showSignup();return false;" style="color:#fff;font-weight:600;text-decoration:none">Create a company account</a></p>
+        <p class="login-help"><a onclick="loginHelp('liMsg');return false;">Need help?</a></p>
       </div>
     </div>
   </div>
@@ -842,16 +851,41 @@ select.mini-ctrl{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg 
 
 <!-- ==================== OPERATOR GATE (owner only) ==================== -->
 <div id="oplogin">
-  <div class="login-bg" style="background:radial-gradient(1000px 600px at 80% 15%,rgba(108,10,27,.5),transparent 60%),linear-gradient(135deg,#2a0512,#4a0510 55%,#042348)"><div class="building"></div></div>
-  <div class="login-card" style="z-index:3">
-    <div style="display:flex;align-items:center;gap:11px;margin-bottom:8px"><div style="width:42px;height:42px;display:grid;place-items:center;flex-shrink:0"><img class="cv-logo" src="" alt="CompliVerge" style="width:100%;height:100%;object-fit:contain"></div><h2 style="color:#fff">Operator access</h2></div>
-    <p class="sub">Restricted to the CompliVerge owner. Your first sign-in on this device sets your operator credentials; after that they're required every time.</p>
-    <div class="field"><label>Operator email</label><div class="inp"><i data-lucide="mail"></i><input id="opEmail" type="email" placeholder="owner@compliverge.com"></div></div>
-    <div class="field"><label>Operator password</label><div class="inp"><i data-lucide="lock"></i><input id="opPass" type="password" placeholder="••••••••"><button type="button" class="pw-toggle" onclick="togglePw('opPass',this)" aria-label="Show password"><i data-lucide="eye"></i></button></div></div>
-    <button class="btn-login" style="background:linear-gradient(135deg,#6c0a1b,#042348)" onclick="operatorLogin()"><i data-lucide="log-in"></i> <span id="opBtnLbl">Access console</span></button>
-    <p style="text-align:center;margin-top:16px;font-size:12.5px"><a href="#" onclick="closeOperatorGate();return false;" style="color:#cdd8e8;text-decoration:none">← Back to sign in</a></p>
+  <div class="login-bg" style="background:radial-gradient(1100px 650px at 82% 14%,rgba(108,10,27,.55),transparent 60%),radial-gradient(900px 600px at 6% 92%,rgba(4,35,72,.9),transparent 55%),linear-gradient(135deg,#240410,#4a0510 52%,#042348)"><div class="building"></div></div>
+  <div class="login-split">
+    <aside class="login-hero">
+      <div class="login-brand">
+        <div class="logo">
+          <div class="mark"><img class="cv-logo" src="" alt="CompliVerge logo"></div>
+          <div><h1 class="wm">Compli<span class="a">Verge</span></h1><p>Operator Console</p></div>
+        </div>
+      </div>
+      <div class="login-hero-body">
+        <h2 class="hero-h">Run CompliVerge from one console.</h2>
+        <p class="hero-sub">Owner-only command centre for every client account, platform health, support and Sentinel intelligence.</p>
+        <ul class="hero-feats">
+          <li><span class="hf-ic"><i data-lucide="layout-dashboard"></i></span><div><b>Platform overview &amp; health</b><span>Accounts, reminders, documents and risks at a glance.</span></div></li>
+          <li><span class="hf-ic"><i data-lucide="building-2"></i></span><div><b>Every client organisation</b><span>See and support each company using CompliVerge.</span></div></li>
+          <li><span class="hf-ic"><i data-lucide="shield-alert"></i></span><div><b>Support &amp; Sentinel alerts</b><span>Resolve tickets and act on high-priority flags.</span></div></li>
+        </ul>
+        <div class="hero-trust"><i data-lucide="lock"></i> Owner-only · credentials stored encoded on this device</div>
+      </div>
+    </aside>
+    <div class="login-pane">
+      <div class="login-card">
+        <div class="oplogin-badge"><i data-lucide="shield"></i> Operator access</div>
+        <h2>Operator sign-in</h2>
+        <p class="sub">Restricted to the CompliVerge owner. Your first sign-in on this device sets your operator credentials; they're required every time after that.</p>
+        <div class="field"><label>Operator email</label><div class="inp"><i data-lucide="mail"></i><input id="opEmail" type="email" placeholder="owner@compliverge.com"></div></div>
+        <div class="field"><label>Operator password</label><div class="inp"><i data-lucide="lock"></i><input id="opPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')operatorLogin()"><button type="button" class="pw-toggle" onclick="togglePw('opPass',this)" aria-label="Show password"><i data-lucide="eye"></i></button></div></div>
+        <div id="opMsg" class="login-msg" style="display:none"></div>
+        <button class="btn-login" style="background:linear-gradient(135deg,#6c0a1b,#042348)" onclick="operatorLogin()"><i data-lucide="log-in"></i> <span id="opBtnLbl">Access console</span></button>
+        <p style="text-align:center;margin-top:16px;font-size:12.5px"><a href="#" onclick="closeOperatorGate();return false;" style="color:#cdd8e8;text-decoration:none">← Back to sign in</a></p>
+        <p class="login-help"><a onclick="loginHelp('opMsg');return false;">Need help?</a></p>
+      </div>
+    </div>
   </div>
-  <div class="login-foot">CompliVerge Operations &nbsp;•&nbsp; Owner-only &nbsp;•&nbsp; Credentials stored encoded on this device</div>
+  <div class="login-partner">In partnership with <a href="https://anzenproglobal.com" target="_blank" rel="noopener">Anzenpro Global Consortium Ltd</a></div>
 </div>
 
 <!-- ==================== SIGN UP ==================== -->
@@ -3318,12 +3352,13 @@ async function doLogin(){
     if(error){
       setMsg(/email not confirmed/i.test(error.message)
         ? 'Please confirm your email first, then sign in.'
-        : 'Email or password is incorrect. Please check and try again.');
+        : 'Incorrect email or password. Please check and try again.');
       return;
     }
     const linked=await loadSession();
     if(!linked){
-      setMsg('These credentials are correct, but this account isn’t linked to a company yet. <a onclick="showSignup();return false;">Finish setting up your company →</a>','warn');
+      await sb.auth.signOut();
+      setMsg('These credentials don’t match an active account. Create a company account below, or use “Need help?”.');
       return;
     }
     clrMsg();showApp();
@@ -3332,6 +3367,10 @@ async function doLogin(){
   }finally{
     if(btn)btn.disabled=false;
   }
+}
+function loginHelp(target){
+  const m=document.getElementById(target||'liMsg');
+  if(m){m.className='login-msg info';m.innerHTML='Trouble signing in? Email <a href="mailto:support@compliverge.com">support@compliverge.com</a> and we’ll help you get access.';m.style.display='block';}
 }
 async function logout(){
   if(!confirm('Sign out of CompliVerge?'))return;
@@ -3455,17 +3494,28 @@ function openOperatorGate(){
 }
 function closeOperatorGate(){document.getElementById('oplogin').style.display='none';const l=document.getElementById('login');l.classList.remove('hidden');l.style.opacity='1';if(location.hash)history.replaceState(null,'',location.pathname);window.scrollTo({top:0});}
 async function operatorLogin(){
-  if(!sb){toast('Not connected','Add your Supabase keys first');return;}
+  const msg=document.getElementById('opMsg');
+  const setMsg=(h,kind)=>{if(msg){msg.innerHTML=h;msg.className='login-msg '+(kind||'err');msg.style.display='block';}};
+  const clr=()=>{if(msg){msg.style.display='none';msg.innerHTML='';}};
+  if(!sb){setMsg('Not connected to the server yet — please wait a moment and try again.');return;}
   const email=(document.getElementById('opEmail').value||'').trim().toLowerCase();
   const pass=document.getElementById('opPass').value||'';
-  if(!email||!pass){toast('Operator access','Enter your email and password');return;}
-  const {data:si,error}=await sb.auth.signInWithPassword({email,password:pass});
-  if(error){toast('Access denied',error.message.indexOf('Email not confirmed')>-1?'Confirm this email first.':'Operator email or password is incorrect');return;}
-  const {data:isOp,error:e2}=await sb.rpc('is_operator');
-  if(e2){toast('Access error',e2.message);return;}
-  if(!isOp){await sb.auth.signOut();toast('Access denied','This account is not an operator. Add its email to the operators table in Supabase.');return;}
-  CUR={userId:(si&&si.user&&si.user.id)||null,email:email,accountId:null,role:'operator'}; // so Enable device notifications works in the console
-  await doEnterOps(email);
+  if(!email||!pass){setMsg('Please enter your operator email and password.');return;}
+  clr();
+  const btn=document.querySelector('#oplogin .btn-login');if(btn)btn.disabled=true;
+  try{
+    const {data:si,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error){setMsg(/email not confirmed/i.test(error.message)?'Please confirm this email first.':'Incorrect email or password. Please check and try again.');return;}
+    const {data:isOp,error:e2}=await sb.rpc('is_operator');
+    if(e2){setMsg('Could not verify operator access. Please try again.');return;}
+    if(!isOp){await sb.auth.signOut();setMsg('These credentials don’t match an operator account.');return;}
+    CUR={userId:(si&&si.user&&si.user.id)||null,email:email,accountId:null,role:'operator'}; // so Enable device notifications works in the console
+    clr();await doEnterOps(email);
+  }catch(e){
+    setMsg('Something went wrong. Please try again.');
+  }finally{
+    if(btn)btn.disabled=false;
+  }
 }
 async function doEnterOps(email){
   document.getElementById('oplogin').style.display='none';
