@@ -8,6 +8,9 @@
 <title>CompliVerge, Business Compliance Tracker &amp; Management Software</title>
 <meta name="description" content="CompliVerge is a business compliance tracker that keeps every compliance requirement your business has in one place, from tax and licensing to HR, safety and the environment, with reminders before anything lapses. Built for businesses in Kenya and beyond.">
 <meta name="google-site-verification" content="d63zDrqPaE4Nnoz_Hrs8Um0xmDS-8zZcNNV3L0VM540" />
+<script type="application/ld+json">
+{"@context": "https://schema.org","@type": "FAQPage","mainEntity": [{"@type": "Question","name": "What is CompliVerge?","acceptedAnswer": {"@type": "Answer","text": "CompliVerge is a business compliance tracker. It keeps every compliance requirement your business has, from tax and licensing to HR, safety and the environment, in one place, and reminds you before anything lapses."}},{"@type": "Question","name": "Who is CompliVerge for?","acceptedAnswer": {"@type": "Answer","text": "Business owners, HR, procurement and operations teams at small, medium and large businesses who want to stay compliant and focus on running the business instead of chasing paperwork."}},{"@type": "Question","name": "What types of compliance can it track?","acceptedAnswer": {"@type": "Answer","text": "Tax, finance, legal, data protection, HR, licensing, occupational safety, fire safety and environmental obligations, across every branch and jurisdiction you operate in."}},{"@type": "Question","name": "How does CompliVerge remind me about deadlines?","acceptedAnswer": {"@type": "Answer","text": "It sends automatic email reminders before each obligation lapses, on the lead times you choose, and shows every upcoming deadline on one dashboard and calendar."}},{"@type": "Question","name": "Is CompliVerge built for businesses in Kenya?","acceptedAnswer": {"@type": "Answer","text": "Yes. CompliVerge is built for Kenyan and regional businesses, and its AI advisor answers your compliance questions with the specific law and the regulator responsible."}},{"@type": "Question","name": "How much does CompliVerge cost?","acceptedAnswer": {"@type": "Answer","text": "You can start for free, with no card required. Set up your company, add your obligations, and begin tracking right away."}},{"@type": "Question","name": "Is my business data secure?","acceptedAnswer": {"@type": "Answer","text": "Yes. Your data is stored securely and isolated to your organisation, so only your team can see it."}}]}
+</script>
 <!-- Link preview (WhatsApp, Facebook, LinkedIn, iMessage, etc.) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CompliVerge">
@@ -178,6 +181,14 @@ input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
 .lp-foot .legal>span{white-space:nowrap}
 .lp-foot a.lp-anz{display:inline;margin:0;font-size:inherit;color:inherit;text-decoration:none;transition:.15s}
 .lp-foot a.lp-anz:hover{color:#fff;text-decoration:underline;text-shadow:0 0 9px rgba(207,224,245,.75)}
+.lp-faq{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.lp-faq details{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:0 18px;box-shadow:var(--shadow-sm)}
+.lp-faq summary{cursor:pointer;padding:16px 0;font-weight:600;font-size:15px;color:var(--ink);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.lp-faq summary::-webkit-details-marker{display:none}
+.lp-faq summary::after{content:"+";font-size:20px;color:var(--navy);font-weight:400;flex-shrink:0}
+.lp-faq details[open] summary::after{content:"\2212"}
+.lp-faq details[open] summary{border-bottom:1px solid var(--line)}
+.lp-faq p{font-size:14px;line-height:1.6;color:var(--ink-2);padding:12px 0 18px;margin:0}
 @media(max-width:820px){.lp-feats,.lp-steps{grid-template-columns:1fr}.lp-foot-grid{grid-template-columns:1fr;gap:22px}.lp-nav-links{display:none}}
 html.dark .lp-nav{background:rgba(16,20,30,.9)}
 html.dark .lp-section .lead,html.dark .lp-hero .sub{color:var(--ink-2)}
@@ -872,7 +883,7 @@ html.dark .sc-sol .rec{color:#79cf5c}
 <div id="landing">
   <nav class="lp-nav">
     <div class="brand"><img class="cv-logo" src="" alt="CompliVerge logo"><b>Compli<span class="a">Verge</span></b></div>
-    <div class="lp-nav-links"><a href="#features">Features</a><a href="#how">How it works</a><a href="#pricing">Pricing</a></div>
+    <div class="lp-nav-links"><a href="#features">Features</a><a href="#how">How it works</a><a href="#faq">FAQ</a><a href="#pricing">Pricing</a></div>
     <div class="lp-nav-cta"><button class="lp-btn ghost" onclick="landingToLogin()">Sign in</button><button class="lp-btn solid" onclick="landingToSignup()">Start free</button></div>
   </nav>
   <header class="lp-hero">
@@ -902,6 +913,19 @@ html.dark .sc-sol .rec{color:#79cf5c}
       <div class="lp-step"><div class="n">2</div><h3>Add your obligations</h3><p>Add them yourself, or let CompliVerge AI map what applies to your sector and country.</p></div>
       <div class="lp-step"><div class="n">3</div><h3>Relax, we track it</h3><p>CompliVerge reminds you before every deadline and keeps your whole team in sync.</p></div>
     </div>
+  </section>
+  <section class="lp-section" id="faq">
+    <h2>Frequently asked questions</h2>
+    <p class="lead">Everything you need to know about CompliVerge, the business compliance tracker.</p>
+    <div class="lp-faq">
+      <details><summary>What is CompliVerge?</summary><p>CompliVerge is a business compliance tracker. It keeps every compliance requirement your business has, from tax and licensing to HR, safety and the environment, in one place, and reminds you before anything lapses.</p></details>
+      <details><summary>Who is CompliVerge for?</summary><p>Business owners, HR, procurement and operations teams at small, medium and large businesses who want to stay compliant and focus on running the business instead of chasing paperwork.</p></details>
+      <details><summary>What types of compliance can it track?</summary><p>Tax, finance, legal, data protection, HR, licensing, occupational safety, fire safety and environmental obligations, across every branch and jurisdiction you operate in.</p></details>
+      <details><summary>How does CompliVerge remind me about deadlines?</summary><p>It sends automatic email reminders before each obligation lapses, on the lead times you choose, and shows every upcoming deadline on one dashboard and calendar.</p></details>
+      <details><summary>Is CompliVerge built for businesses in Kenya?</summary><p>Yes. CompliVerge is built for Kenyan and regional businesses, and its AI advisor answers your compliance questions with the specific law and the regulator responsible.</p></details>
+      <details><summary>How much does CompliVerge cost?</summary><p>You can start for free, with no card required. Set up your company, add your obligations, and begin tracking right away.</p></details>
+      <details><summary>Is my business data secure?</summary><p>Yes. Your data is stored securely and isolated to your organisation, so only your team can see it.</p></details>
+      </div>
   </section>
   <section class="lp-section" id="pricing" style="padding-top:0">
     <div class="lp-cta">
