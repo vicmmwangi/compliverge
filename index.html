@@ -572,6 +572,11 @@ table.tbl tbody tr{transition:.12s}table.tbl tbody tr:hover{background:var(--bra
 .ai-qcard .ic svg{width:19px;height:19px}
 .ai-qcard h4{font-size:13.5px}.ai-qcard p{font-size:11.5px;color:var(--ink-3);margin-top:3px}
 .ai-chat{padding:22px 24px}
+.ai-empty{text-align:center;padding:30px 18px 10px;color:var(--ink-2)}
+.ai-empty-ic{width:52px;height:52px;border-radius:15px;margin:0 auto 12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--navy),var(--burgundy));color:#fff}
+.ai-empty-ic svg{width:24px;height:24px}
+.ai-empty h3{font-family:'Poppins';font-size:18px;color:var(--ink);margin-bottom:6px}
+.ai-empty p{font-size:13px;line-height:1.6;max-width:440px;margin:0 auto}
 .ai-msg{display:flex;gap:13px;margin-bottom:20px}
 .ai-msg .who{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex-shrink:0;color:#fff;font-weight:600;font-size:13px}
 .ai-msg.u .who{background:linear-gradient(135deg,#0f5aa0,#042348)}
@@ -1089,51 +1094,8 @@ select.mini-ctrl{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg 
           <div class="ai-qcard" onclick="newReminder()"><div class="ic"><i data-lucide="bell-plus"></i></div><h4>Draft a reminder</h4><p>AI fills the form for you</p></div>
         </div>
         <div class="card">
-          <div class="ai-chat" id="aiChat">
-            <div class="ai-msg u"><div class="who">U</div><div class="ai-bubble">What compliance obligations apply to a manufacturing company in Nairobi with 45 employees?</div></div>
-            <div class="ai-msg a"><div class="who"><i data-lucide="sparkles"></i></div>
-              <div class="ai-bubble">Based on <b>Kenya · Manufacturing · Nairobi · 45 staff</b>, here's what applies to you:
-                <ul>
-                  <li><span class="k">Tax</span> VAT returns (monthly, 20th), PAYE (9th), and annual corporate income tax — filed with KRA on iTax.</li>
-                  <li><span class="k">Finance</span> Audited financial statements under the Companies Act 2015; IFRS-compliant reporting.</li>
-                  <li><span class="k">Legal</span> Annual returns to the Business Registration Service and a beneficial ownership register.</li>
-                  <li><span class="k">Data</span> Registration as a data controller with the ODPC under the Data Protection Act 2019.</li>
-                  <li><span class="k">HR</span> NSSF and SHIF remittances; compliance with the Employment Act 2007.</li>
-                  <li><span class="k">Safety</span> Annual DOSHS OSH audit and fire safety certificate under OSHA 2007.</li>
-                  <li><span class="k">Environment</span> NEMA effluent and waste obligations under EMCA 1999.</li>
-                  <li><span class="k">Licensing</span> Nairobi County single business permit.</li>
-                </ul>
-                I can create tracked reminders for all of these with the right frequencies and owners — just say the word.
-                <div class="ai-sources">
-                  <div class="src-head"><i data-lucide="link-2"></i> Sources <span>ranked by authority · open in a new tab</span></div>
-                  <div class="src-tier">
-                    <div class="src-tier-label"><span class="tno">1</span> Primary law — Kenya (directly governing)</div>
-                    <a class="src-link" href="https://new.kenyalaw.org/legislation/" target="_blank" rel="noopener noreferrer"><i data-lucide="scale"></i> Occupational Safety &amp; Health Act, 2007 — s.11 <span class="src-site">kenyalaw.org</span><i data-lucide="external-link" class="ext"></i></a>
-                    <a class="src-link" href="https://new.kenyalaw.org/legislation/" target="_blank" rel="noopener noreferrer"><i data-lucide="scale"></i> Value Added Tax Act, 2013 <span class="src-site">kenyalaw.org</span><i data-lucide="external-link" class="ext"></i></a>
-                    <a class="src-link" href="https://new.kenyalaw.org/legislation/" target="_blank" rel="noopener noreferrer"><i data-lucide="scale"></i> Data Protection Act, 2019 <span class="src-site">kenyalaw.org</span><i data-lucide="external-link" class="ext"></i></a>
-                  </div>
-                  <div class="src-tier">
-                    <div class="src-tier-label"><span class="tno">2</span> Other applicable laws &amp; regulations</div>
-                    <a class="src-link" href="https://new.kenyalaw.org/legislation/" target="_blank" rel="noopener noreferrer"><i data-lucide="book-marked"></i> Income Tax Act (Cap 470) · Companies Act 2015 · Employment Act 2007 · EMCA 1999 <span class="src-site">kenyalaw.org</span><i data-lucide="external-link" class="ext"></i></a>
-                  </div>
-                  <div class="src-tier">
-                    <div class="src-tier-label"><span class="tno">3</span> Other sources — authority guidance &amp; standards</div>
-                    <a class="src-link" href="https://www.kra.go.ke" target="_blank" rel="noopener noreferrer"><i data-lucide="landmark"></i> KRA — filing guidance &amp; iTax <span class="src-site">kra.go.ke</span><i data-lucide="external-link" class="ext"></i></a>
-                    <a class="src-link" href="https://www.odpc.go.ke" target="_blank" rel="noopener noreferrer"><i data-lucide="landmark"></i> ODPC — data controller registration <span class="src-site">odpc.go.ke</span><i data-lucide="external-link" class="ext"></i></a>
-                    <a class="src-link" href="https://www.labour.go.ke" target="_blank" rel="noopener noreferrer"><i data-lucide="landmark"></i> DOSHS — OSH audits &amp; plant registration <span class="src-site">labour.go.ke</span><i data-lucide="external-link" class="ext"></i></a>
-                    <a class="src-link" href="https://www.nema.go.ke" target="_blank" rel="noopener noreferrer"><i data-lucide="landmark"></i> NEMA — environmental compliance <span class="src-site">nema.go.ke</span><i data-lucide="external-link" class="ext"></i></a>
-                  </div>
-                </div>
-                <div class="ai-actions">
-                  <button class="btn btn-ai" style="height:34px;font-size:12px" onclick="saveReminder()"><i data-lucide="check"></i> Create all reminders</button>
-                  <button class="btn btn-ghost" style="height:34px;font-size:12px" onclick="nav('education',navByPage('education'))">Read the laws</button>
-                </div></div></div>
-          </div>
-          <div class="ai-suggests">
-            <span class="chip" onclick="askAIAsk(this.textContent)">When is my next VAT return due?</span>
-            <span class="chip" onclick="askAIAsk(this.textContent)">Penalties for late annual returns?</span>
-            <span class="chip" onclick="askAIAsk(this.textContent)">Do I need to register with the ODPC?</span>
-          </div>
+          <div class="ai-chat" id="aiChat"></div>
+          <div class="ai-suggests" id="aiSuggests"></div>
           <div class="ai-input"><i data-lucide="message-square" style="width:18px;height:18px;color:var(--ink-3)"></i><input id="aiInput" placeholder="Ask CompliVerge AI about any compliance obligation…" onkeydown="if(event.key==='Enter')askAI()"><button class="send" onclick="askAI()"><i data-lucide="arrow-up"></i></button></div>
         </div>
       </section>
@@ -1933,6 +1895,7 @@ function nav(id,el){
   if(id==='dashboard')setTimeout(initCharts,60);
   if(id==='wizard')wizInit();
   if(id==='actionplans')apInit();
+  if(id==='ai')aiHomeInit();
   lucide.createIcons();
 }
 function navByPage(id){const items=document.querySelectorAll('#app .nav-item');
@@ -3876,9 +3839,45 @@ function aiAnswerHtml(out){
   return body+src+'<div class="muted" style="font-size:11px;margin-top:10px">General guidance, not legal advice.</div>';
 }
 function aiAppendUser(q){const chat=document.getElementById('aiChat');if(!chat)return;
+  const em=chat.querySelector('.ai-empty');if(em)em.remove();
   const d=document.createElement('div');d.className='ai-msg u';
   d.innerHTML='<div class="who">U</div><div class="ai-bubble">'+aiEsc(q)+'</div>';
   chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
+function aiHomeInit(){
+  const a=(typeof account==='function')?account():null;
+  const chat=document.getElementById('aiChat');
+  if(chat && !chat.querySelector('.ai-msg')){
+    const co=(a&&a.company)?a.company:'your organisation';
+    const ctx=[a&&a.sector,a&&a.country].filter(Boolean).join(' · ')||'your profile';
+    chat.innerHTML='<div class="ai-empty"><div class="ai-empty-ic"><i data-lucide="sparkles"></i></div>'
+      +'<h3>Ask CompliVerge AI</h3>'
+      +'<p>Tailored to <b>'+aiEsc(co)+'</b> — '+aiEsc(ctx)+'. Ask what applies to you, explain a law, or draft a reminder. Every answer cites the law it comes from.</p></div>';
+  }
+  renderAiSuggests();
+  if(window.lucide)lucide.createIcons();
+}
+function renderAiSuggests(){
+  const box=document.getElementById('aiSuggests');if(!box)return;
+  const a=(typeof account==='function')?account():null;
+  const sector=((a&&a.sector)||'').toLowerCase();
+  const qs=[];
+  // 1) from the company's own tracked obligations (most relevant)
+  let rem=(typeof getRem==='function')?getRem():[];
+  rem=rem.slice().sort((x,y)=>{const dx=daysTo(x.expiry),dy=daysTo(y.expiry);return (dx==null?1e9:dx)-(dy==null?1e9:dy);});
+  if(rem[0]&&rem[0].req)qs.push('What happens if I miss '+rem[0].req+'?');
+  // 2) tailored to the company's sector
+  const bank={
+    manufacturing:['Do I need a DOSHS OSH audit and fire safety certificate?','What are my NEMA effluent and waste obligations?'],
+    energy:['Which EPRA licences apply to my electrical work?','What safety obligations apply to my energy operations?'],
+    healthcare:['What licences does my health facility need?','How do I protect patient data under the Data Protection Act?'],
+    services:['Do I need to register with the ODPC as a data controller?','What are my VAT and PAYE filing dates?'],
+    'ehs consultancy':['What must my EHS consultancy be accredited for?','What are a NEMA lead expert’s obligations?']
+  };
+  (bank[sector]||['What compliance obligations apply to my organisation?','Do I need to register with the ODPC?']).forEach(q=>qs.push(q));
+  qs.push('When is my next VAT return due?');
+  const seen={},out=[];qs.forEach(q=>{if(q&&!seen[q]){seen[q]=1;out.push(q);}});
+  box.innerHTML=out.slice(0,4).map(q=>'<span class="chip" onclick="askAIAsk(this.textContent)">'+aiEsc(q)+'</span>').join('');
+}
 function aiAppendAssistant(html){const chat=document.getElementById('aiChat');if(!chat)return null;
   const d=document.createElement('div');d.className='ai-msg a';
   d.innerHTML='<div class="who"><i data-lucide="sparkles"></i></div><div class="ai-bubble">'+html+'</div>';
