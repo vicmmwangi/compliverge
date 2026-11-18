@@ -1289,7 +1289,7 @@ html.dark .sc-sol .rec{color:#79cf5c}
               <div class="fg full"><label>Compliance requirement <span class="req">*</span></label><input id="rmReq" class="ctrl" placeholder="e.g. Annual OSH Audit (DOSHS)"></div>
               <div class="fg full"><label>Description</label><textarea id="rmDesc" class="ctrl" placeholder="What this obligation involves…"></textarea></div>
               <div class="fg"><label>Responsible department</label><input id="rmDept" class="ctrl" placeholder="e.g. HSE / Compliance"></div>
-              <div class="fg"><label>Responsible person <span class="req">*</span></label><input id="rmOwner" class="ctrl" placeholder="Who owns this"></div>
+              <div class="fg"><label>Responsible person</label><input id="rmOwner" class="ctrl" placeholder="Who owns this (optional)"></div>
             </div>
             <div class="divider"></div>
             <h3 style="font-size:15px;margin-bottom:16px;display:flex;align-items:center;gap:8px"><i data-lucide="calendar-clock" style="width:18px;height:18px;color:var(--navy)"></i> Schedule &amp; alerts</h3>
@@ -2082,12 +2082,11 @@ async function saveReminder(){
   if(!sb){toast('Not connected','Add your Supabase keys first');return;}
   const g=id=>document.getElementById(id);
   const req=g('rmReq').value.trim(), expiry=g('rmExpiry').value;
-  const owner=g('rmOwner').value.trim();
+  const owner=g('rmOwner').value.trim()||'Unassigned';
   let freq=g('rmFreq').value;
   if(freq==='__custom')freq=(g('rmFreqCustom').value||'').trim();
   if(!req){toast('Add a requirement','Name the obligation first');return;}
   if(!freq){toast('Set the frequency','Choose how often this obligation recurs, or One-time');return;}
-  if(!owner){toast('Add a responsible person','Name who is responsible for this obligation');return;}
   if(!expiry){toast('Add a due date','Set the expiry / due date');return;}
   const pe=document.querySelector('#rmPrio .chip.on');
   const prio=pe?({Low:'low',Medium:'med',High:'high',Critical:'crit'}[pe.textContent]||'med'):'med';
