@@ -1098,6 +1098,7 @@ select.mini-ctrl{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg 
           <div class="ai-chat" id="aiChat"></div>
           <div class="ai-suggests" id="aiSuggests"></div>
           <div class="ai-input"><i data-lucide="message-square" style="width:18px;height:18px;color:var(--ink-3)"></i><input id="aiInput" placeholder="Ask CompliVerge AI about any compliance obligation…" onkeydown="if(event.key==='Enter')askAI()"><button class="send" onclick="askAI()"><i data-lucide="arrow-up"></i></button></div>
+          <div style="padding:0 24px 14px;font-size:11px;color:var(--ink-3);display:flex;align-items:center;gap:6px"><i data-lucide="shield" style="width:12px;height:12px"></i> Your question is processed by a third-party AI to generate the answer. Avoid pasting more personal data than needed. <a href="#" onclick="openLegal('privacy');return false;" style="color:var(--navy);text-decoration:underline">Privacy</a></div>
         </div>
       </section>
 
@@ -1799,7 +1800,7 @@ function esc(s){return (s==null?'':(''+s)).replace(/&/g,'&amp;').replace(/</g,'&
 let DB={account:null,profile:null,users:[],reminders:[],documents:[],tickets:[],branches:[],actionPlans:[]};
 let CUR=null; // {userId,email,accountId,role}
 const roleName={owner:"Owner · Admin",editor:"Editor",viewer:"Viewer"};
-const TERMS_VERSION='v1.0 (2026-10)';
+const TERMS_VERSION='v1.1 (2026-11)';
 /* ===== Legal modal (Terms of Service + Privacy Policy) ===== */
 const LEGAL_TOS=`<h3 style="color:var(--navy);margin:0 0 6px">CompliVerge Terms of Service</h3>
 <p><b>1. The service.</b> CompliVerge ("the Service") is a compliance-management platform provided by <b>CompliVerge</b>, an independent company that owns and operates the Service. It helps organisations in Kenya track statutory and regulatory obligations, deadlines, documents and action plans.</p>
@@ -1818,11 +1819,12 @@ const LEGAL_PRIVACY=`<h3 style="color:var(--navy);margin:0 0 6px">CompliVerge Pr
 <p><b>2. What we collect.</b> Account and contact details (name, email, phone), your company information, and the compliance records, reminders and documents you choose to add.</p>
 <p><b>3. Why.</b> To create and run your account, track your obligations, send reminders, provide support, and improve the Service. The legal basis is performance of our contract with you and your consent.</p>
 <p><b>4. Where it's stored.</b> Data is hosted on Supabase (managed PostgreSQL and storage). Uploaded documents are stored privately, scoped to your account, and transmitted over encrypted connections.</p>
-<p><b>5. Sharing.</b> We do <b>not</b> sell your data. We use trusted processors (cloud hosting and email delivery) under confidentiality obligations, only to provide the Service.</p>
-<p><b>6. Your rights (DPA 2019).</b> You may request access to, correction of, or deletion of your personal data, and may object to or restrict certain processing. To exercise these rights, contact us.</p>
-<p><b>7. Breach.</b> In the event of a personal-data breach that poses a real risk, we will notify the Office of the Data Protection Commissioner (ODPC) and affected users within 72 hours, as required.</p>
-<p><b>8. Retention.</b> We keep your data while your account is active and as required by law, then delete or anonymise it.</p>
-<p><b>9. Contact / DPO.</b> Reach the CompliVerge team through the in-app <b>Support &amp; Feedback</b> section. ODPC registration is in progress.</p>`;
+<p><b>5. Sharing.</b> We do <b>not</b> sell your data. We use trusted processors (cloud hosting, email delivery and the AI providers described in section 6) under confidentiality obligations, only to provide the Service.</p>
+<p><b>6. Artificial-intelligence features.</b> CompliVerge AI, the action-plan builder, and document auto-fill are powered by third-party AI providers. When you use them, the text of your request — and, for an action plan, the content of the report you submit — is sent to one of these providers over an encrypted connection so it can generate your response. We send only what the feature needs, we do not use your data to train AI models, and we do not share it for advertising. These AI features are optional: if you do not use them, none of your content is sent to an AI provider. Avoid pasting more personal data than a question requires.</p>
+<p><b>7. Your rights (DPA 2019).</b> You may request access to, correction of, or <b>deletion</b> of your personal data, and may object to or restrict certain processing. To exercise these rights — including deleting your account and its data — contact us through the in-app Support &amp; Feedback section.</p>
+<p><b>8. Breach.</b> In the event of a personal-data breach that poses a real risk, we will notify the Office of the Data Protection Commissioner (ODPC) and affected users within 72 hours, as required.</p>
+<p><b>9. Retention.</b> We keep your data while your account is active and as required by law, then delete or anonymise it.</p>
+<p><b>10. Contact / DPO.</b> Reach the CompliVerge team through the in-app <b>Support &amp; Feedback</b> section. ODPC registration is in progress.</p>`;
 let _legalTab='tos';
 function openLegal(which){_legalTab=which||'tos';const m=document.getElementById('legalModal');if(!m)return;const lg=document.getElementById('legalLogo');if(lg)lg.src=cvLogo();setTxt('legalVer',TERMS_VERSION);legalTab(_legalTab);m.style.display='block';lucide.createIcons();}
 function closeLegal(){const m=document.getElementById('legalModal');if(m)m.style.display='none';}
