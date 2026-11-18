@@ -255,9 +255,12 @@ html.dark .lp-section .lead,html.dark .lp-hero .sub{color:var(--ink-2)}
 .hero-trust svg{width:15px;height:15px;color:#9ed37e}
 .login-pane{display:flex;justify-content:center;align-items:center}
 .login-pane .login-card{width:100%;max-width:420px}
-.login-partner{position:absolute;right:26px;bottom:18px;z-index:3;font-size:12px;color:#9fb6d2}
-.login-partner a{color:#cfe0f5;font-weight:600;text-decoration:none;border-bottom:1px solid rgba(207,224,245,.45);padding-bottom:1px}
-.login-partner a:hover{color:#fff;border-color:#fff}
+.login-partner{position:absolute;left:0;right:0;bottom:16px;z-index:3;font-size:12px;color:#9fb6d2;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:0 26px}
+.login-partner>span{white-space:nowrap}
+.login-partner a{color:inherit;text-decoration:none;transition:.15s}
+.login-partner a:hover{color:#fff;text-decoration:underline;text-shadow:0 0 9px rgba(207,224,245,.75)}
+.cv-cookie{position:fixed;left:16px;right:16px;bottom:16px;z-index:200;max-width:600px;margin:0 auto;background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:13px 16px;font-size:12.5px;color:var(--ink-2);align-items:center;gap:12px;flex-wrap:wrap}
+.cv-cookie a{color:var(--navy);font-weight:600;text-decoration:none}
 @media(max-width:920px){
   #login,#oplogin{flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:68px 0 36px}
   #login .login-split,#oplogin .login-split{grid-template-columns:1fr;max-width:420px;width:100%;gap:16px;padding:0 20px;margin:0 auto}
@@ -267,7 +270,7 @@ html.dark .lp-section .lead,html.dark .lp-hero .sub{color:var(--ink-2)}
   .login-hero-body{display:none}
   .login-pane{width:100%}
   .login-pane .login-card{max-width:420px}
-  .login-partner{position:static;display:block;text-align:center;width:100%;margin:16px auto 0;right:auto;bottom:auto}
+  .login-partner{position:static;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;width:100%;margin:16px auto 0;left:auto;right:auto;bottom:auto;padding:0}
 }
 .login-foot{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:#8ea6c6;font-size:12px;z-index:3;letter-spacing:.03em}
 .demo-tag{position:absolute;top:40px;right:44px;z-index:3;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:11.5px;padding:7px 13px;border-radius:20px;backdrop-filter:blur(8px)}
@@ -909,6 +912,7 @@ html.dark .sc-sol .rec{color:#79cf5c}
       <div>
         <div class="brand" style="display:flex;gap:10px;align-items:center;margin-bottom:12px"><img class="cv-logo" src="" alt="CompliVerge" style="width:32px;height:32px"><b style="color:#fff;font-family:Poppins;font-size:17px">Compli<span style="color:var(--green)">Verge</span></b></div>
         <p style="font-size:13.5px;line-height:1.6;max-width:360px;margin:0">CompliVerge is a business compliance tracker that keeps all your compliance requirements in one place, from tax, finance and legal to data protection, HR, safety and the environment, with reminders before any deadline lapses.</p>
+        <p style="font-size:12.5px;color:#8aa0bf;margin:12px 0 0">Nairobi, Kenya &middot; <a href="mailto:support@compliverge.com" style="color:inherit;text-decoration:none">support@compliverge.com</a></p>
       </div>
       <div><h4>Product</h4><a href="#features">Features</a><a href="#how">How it works</a><a style="cursor:pointer" onclick="landingToLogin()">Sign in</a><a style="cursor:pointer" onclick="landingToSignup()">Start free</a></div>
       <div><h4>Company &amp; legal</h4><a href="#" onclick="openLegal('privacy');return false;">Privacy Policy</a><a href="#" onclick="openLegal('tos');return false;">Terms of Service</a><a href="https://anzenproglobal.com" target="_blank" rel="noopener">Anzenpro Global</a></div>
@@ -956,7 +960,7 @@ html.dark .sc-sol .rec{color:#79cf5c}
       </div>
     </div>
   </div>
-  <div class="login-partner">In partnership with <a href="https://anzenproglobal.com" target="_blank" rel="noopener">Anzenpro Global Consortium Ltd</a></div>
+  <div class="login-partner"><span>&copy; 2026 CompliVerge</span><span>In partnership with <a href="https://anzenproglobal.com" target="_blank" rel="noopener">Anzenpro Global Consortium Ltd</a>.</span></div>
 </div>
 
 <!-- ==================== OPERATOR GATE (owner only) ==================== -->
@@ -995,7 +999,7 @@ html.dark .sc-sol .rec{color:#79cf5c}
       </div>
     </div>
   </div>
-  <div class="login-partner">In partnership with <a href="https://anzenproglobal.com" target="_blank" rel="noopener">Anzenpro Global Consortium Ltd</a></div>
+  <div class="login-partner"><span>&copy; 2026 CompliVerge</span><span>In partnership with <a href="https://anzenproglobal.com" target="_blank" rel="noopener">Anzenpro Global Consortium Ltd</a>.</span></div>
 </div>
 
 <!-- ==================== SIGN UP ==================== -->
@@ -1620,6 +1624,11 @@ html.dark .sc-sol .rec{color:#79cf5c}
                 <div class="fg"><label>Phone</label><input id="prPhone" class="ctrl" placeholder="+254…"></div>
               </div>
               <div class="form-actions"><button class="btn btn-primary" onclick="saveProfile()"><i data-lucide="check"></i> Save changes</button></div>
+              <div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--line)">
+                <h4 style="font-size:13.5px;color:#c0392b;margin-bottom:4px">Danger zone</h4>
+                <p class="muted" style="font-size:12.5px;margin-bottom:12px">Permanently delete your company account and all of its data, including reminders, documents and tickets. This cannot be undone. Only an account owner can do this.</p>
+                <button class="btn btn-danger" onclick="deleteMyAccount()"><i data-lucide="trash-2"></i> Delete account and all data</button>
+              </div>
             </div>
             <div class="card set-panel" id="panel-password" style="padding:24px 26px">
               <h3 style="font-size:16px;margin-bottom:16px">Change password</h3>
@@ -4179,6 +4188,20 @@ function cvSyncThemeUI(mode){
   document.querySelectorAll('#themeSeg [data-theme-opt]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-theme-opt')===mode);});
 }
 try{window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(){var m;try{m=localStorage.getItem('cv-theme')}catch(e){} if((m||'auto')==='auto')cvApplyTheme('auto');});}catch(e){}
+async function deleteMyAccount(){
+  if(!sb)return;
+  if(!confirm('This permanently deletes your company account and ALL of its data (reminders, documents, tickets). This cannot be undone. Continue?'))return;
+  var c=prompt('Type DELETE to permanently delete your account and all of its data:');
+  if((c||'').trim().toUpperCase()!=='DELETE'){toast('Cancelled','Nothing was deleted.');return;}
+  var r=await sb.rpc('delete_my_account');
+  if(r.error){toast('Could not delete account',r.error.message);return;}
+  try{await sb.auth.signOut();}catch(e){}
+  try{localStorage.removeItem('cv-theme');}catch(e){}
+  alert('Your account and all of its data have been permanently deleted.');
+  location.href='/';
+}
+function cvCookieOk(){try{localStorage.setItem('cv-cookie-ok','1')}catch(e){}var b=document.getElementById('cvCookie');if(b)b.style.display='none';}
+window.addEventListener('load',function(){try{if(localStorage.getItem('cv-cookie-ok'))return;}catch(e){}var b=document.getElementById('cvCookie');if(b){b.style.display='flex';if(window.lucide)lucide.createIcons();}});
 document.addEventListener('DOMContentLoaded',bootstrap);
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.shiftKey&&(e.key==='O'||e.key==='o')){var lg=document.getElementById('login');if(lg&&!lg.classList.contains('hidden')){e.preventDefault();openOperatorGate();}}});
 
@@ -4277,5 +4300,6 @@ async function cvInstall(){
 /* iOS Safari never fires beforeinstallprompt, surface the button there so users still get guidance */
 try{if(cvIsIOS()&&!cvStandalone())setTimeout(cvShowInstall,1200);}catch(e){}
 </script>
+<div id="cvCookie" class="cv-cookie" style="display:none"><span style="flex:1;min-width:210px">CompliVerge uses only essential cookies to run the app and keep you signed in. <a href="#" onclick="openLegal('privacy');return false;">Learn more</a></span><button onclick="cvCookieOk()" class="btn btn-primary" style="flex-shrink:0"><i data-lucide="check"></i> Got it</button></div>
 </body>
 </html>
