@@ -173,6 +173,36 @@ input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
 .btn-login{width:100%;height:48px;border-radius:12px;background:linear-gradient(135deg,#0f5aa0,#042348);color:#fff;font-weight:600;font-size:14.5px;box-shadow:0 12px 28px rgba(4,35,72,.55);transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .btn-login:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(4,35,72,.65)}
+/* ---- login two-pane layout ---- */
+#login .login-split{position:relative;z-index:3;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;width:100%;max-width:1140px;padding:0 clamp(24px,5vw,56px);align-items:center}
+.login-hero{color:#fff;max-width:540px}
+.login-hero .login-brand{position:static;top:auto;left:auto;margin-bottom:32px}
+.hero-h{font-family:'Poppins';font-weight:700;font-size:clamp(26px,3vw,36px);line-height:1.14;letter-spacing:-.01em;color:#fff;margin:0 0 14px}
+.hero-sub{color:#bdd1ea;font-size:15px;line-height:1.6;max-width:470px;margin:0 0 30px}
+.hero-feats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:18px}
+.hero-feats li{display:flex;gap:14px;align-items:flex-start}
+.hf-ic{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(127,178,102,.15);border:1px solid rgba(127,178,102,.32)}
+.hf-ic svg{width:21px;height:21px;color:#9ed37e}
+.hero-feats b{display:block;color:#fff;font-size:14.5px;font-weight:600;margin-bottom:2px}
+.hero-feats li>div>span{color:#9fb6d2;font-size:12.5px;line-height:1.5}
+.hero-trust{display:inline-flex;align-items:center;gap:9px;margin-top:30px;padding:9px 14px;border-radius:30px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#cfe0f5;font-size:12px}
+.hero-trust svg{width:15px;height:15px;color:#9ed37e}
+.login-pane{display:flex;justify-content:center;align-items:center}
+.login-pane .login-card{width:100%;max-width:420px}
+.login-partner{position:absolute;right:26px;bottom:18px;z-index:3;font-size:12px;color:#9fb6d2}
+.login-partner a{color:#cfe0f5;font-weight:600;text-decoration:none;border-bottom:1px solid rgba(207,224,245,.45);padding-bottom:1px}
+.login-partner a:hover{color:#fff;border-color:#fff}
+@media(max-width:920px){
+  #login{flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:68px 0 36px}
+  #login .login-split{grid-template-columns:1fr;max-width:420px;width:100%;gap:16px;padding:0 20px;margin:0 auto}
+  .login-hero{max-width:none;text-align:center;display:flex;flex-direction:column;align-items:center}
+  .login-hero .login-brand{display:flex;justify-content:center;width:100%;margin-bottom:2px}
+  .login-hero .login-brand .logo{justify-content:center}
+  .login-hero-body{display:none}
+  .login-pane{width:100%}
+  .login-pane .login-card{max-width:420px}
+  .login-partner{position:static;display:block;text-align:center;width:100%;margin:16px auto 0;right:auto;bottom:auto}
+}
 .login-foot{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:#8ea6c6;font-size:12px;z-index:3;letter-spacing:.03em}
 .demo-tag{position:absolute;top:40px;right:44px;z-index:3;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:11.5px;padding:7px 13px;border-radius:20px;backdrop-filter:blur(8px)}
 
@@ -772,29 +802,42 @@ select.mini-ctrl{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg 
 <!-- ==================== LOGIN ==================== -->
 <div id="login">
   <div class="login-bg"><div class="building"></div></div>
-  <div class="login-brand">
-    <div class="logo">
-      <div class="mark"><img class="cv-logo" src="" alt="CompliVerge logo"></div>
-      <div><h1 class="wm">Compli<span class="a">Verge</span></h1><p>Smart Global Compliance Management</p></div>
+  <div class="demo-tag">Free trial</div>
+  <div class="login-split">
+    <aside class="login-hero">
+      <div class="login-brand">
+        <div class="logo">
+          <div class="mark"><img class="cv-logo" src="" alt="CompliVerge logo"></div>
+          <div><h1 class="wm">Compli<span class="a">Verge</span></h1><p>Smart Global Compliance Management</p></div>
+        </div>
+      </div>
+      <div class="login-hero-body">
+        <h2 class="hero-h">Every compliance obligation your business has — in one place.</h2>
+        <p class="hero-sub">Track tax, legal, HR, safety and environmental deadlines across every branch you operate, and get reminded long before anything lapses.</p>
+        <ul class="hero-feats">
+          <li><span class="hf-ic"><i data-lucide="sparkles"></i></span><div><b>AI compliance advisor</b><span>Ask what applies to you — every answer cites the law.</span></div></li>
+          <li><span class="hf-ic"><i data-lucide="bell-ring"></i></span><div><b>Never miss a deadline</b><span>Email, SMS &amp; WhatsApp reminders on your schedule.</span></div></li>
+          <li><span class="hf-ic"><i data-lucide="list-checks"></i></span><div><b>Audit reports, turned into action plans</b><span>Upload a report; get a prioritised, trackable plan.</span></div></li>
+        </ul>
+        <div class="hero-trust"><i data-lucide="shield-check"></i> Bank-grade security · your data stays private to your organisation</div>
+      </div>
+    </aside>
+    <div class="login-pane">
+      <div class="login-card">
+        <h2>Welcome back</h2>
+        <p class="sub">Sign in with your personal credentials to your organisation's compliance workspace.</p>
+        <div class="field"><label>Work email</label>
+          <div class="inp"><i data-lucide="mail"></i><input id="liEmail" type="email" placeholder="you@company.com"></div></div>
+        <div class="field"><label>Password</label>
+          <div class="inp"><i data-lucide="lock"></i><input id="liPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" class="pw-toggle" onclick="togglePw('liPass',this)" aria-label="Show password"><i data-lucide="eye"></i></button></div></div>
+        <div class="login-row"><label><input type="checkbox" checked> Remember me</label><a href="#">Forgot password?</a></div>
+        <div id="liMsg" class="login-msg" style="display:none"></div>
+        <button class="btn-login" onclick="doLogin()"><i data-lucide="log-in"></i> Sign in</button>
+        <p style="text-align:center;margin-top:16px;font-size:12.5px;color:#c3d5ec">New to CompliVerge? <a href="#" onclick="showSignup();return false;" style="color:#fff;font-weight:600;text-decoration:none">Create a company account</a></p>
+      </div>
     </div>
   </div>
-  <div class="demo-tag">Free trial</div>
-  <div class="login-card">
-    <h2>Welcome back</h2>
-    <p class="sub">Sign in with your personal credentials to your organisation's compliance workspace.</p>
-    <div class="field"><label>Work email</label>
-      <div class="inp"><i data-lucide="mail"></i><input id="liEmail" type="email" placeholder="you@company.com"></div></div>
-    <div class="field"><label>Password</label>
-      <div class="inp"><i data-lucide="lock"></i><input id="liPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" class="pw-toggle" onclick="togglePw('liPass',this)" aria-label="Show password"><i data-lucide="eye"></i></button></div></div>
-    <div class="login-row"><label><input type="checkbox" checked> Remember me</label><a href="#">Forgot password?</a></div>
-    <div id="liMsg" class="login-msg" style="display:none"></div>
-    <button class="btn-login" onclick="doLogin()"><i data-lucide="log-in"></i> Sign in</button>
-    <p style="text-align:center;margin-top:16px;font-size:12.5px;color:#c3d5ec">New to CompliVerge? <a href="#" onclick="showSignup();return false;" style="color:#fff;font-weight:600;text-decoration:none">Create a company account</a></p>
-  </div>
-  <footer class="login-foot" style="max-width:640px;line-height:1.7">
-    <div><b>CompliVerge</b> — a business compliance tracker for tax, finance, legal, data-protection, HR, safety &amp; environment, with reminders before any deadline lapses.</div>
-    <div style="margin-top:6px">In partnership with <a href="https://anzenproglobal.com" target="_blank" rel="noopener" style="color:#fff;font-weight:600;text-decoration:underline">Anzenpro Global</a> — expert OSH, fire &amp; environmental audits, thermography and EIA. &nbsp;·&nbsp; Up to 3 users per organisation</div>
-  </footer>
+  <div class="login-partner">In partnership with <a href="https://anzenproglobal.com" target="_blank" rel="noopener">Anzenpro Global Consortium Ltd</a></div>
 </div>
 
 <!-- ==================== OPERATOR GATE (owner only) ==================== -->
