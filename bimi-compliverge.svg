@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" baseProfile="tiny-ps" version="1.2" viewBox="0 0 512 512">
+  <title>CompliVerge</title>
+  <rect width="512" height="512" rx="116" fill="#042348"/>
+  <path d="M256 92 L394 138 C394 138 394 250 394 302 C394 372 330 414 256 444 C182 414 118 372 118 302 C118 250 118 138 118 138 Z" fill="#7fb266"/>
+  <path d="M186 266 L236 316 L332 198" fill="none" stroke="#ffffff" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
