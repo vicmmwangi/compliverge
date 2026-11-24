@@ -3242,7 +3242,7 @@ async function loadReport(){
     const tl=document.getElementById('triageList');
     if(tl){tl.innerHTML='<div class="card" style="padding:28px;text-align:center"><i data-lucide="loader" class="spin" style="width:26px;height:26px;color:var(--navy)"></i><div style="margin-top:12px;font-weight:600">CompliVerge AI is reading your report…</div><div class="muted" style="font-size:12px;margin-top:4px">Pulling out the findings and recommendations. This usually takes 10, 30 seconds.</div></div>';lucide.createIcons();}
     try{
-      const {data,error}=await sb.functions.invoke('compliverge-ai',{body:{mode:'extract',text:apReportText.slice(0,30000)}});
+      const {data,error}=await sb.functions.invoke('compliverge-ai',{body:{mode:'extract',text:apReportText.slice(0,48000)}});
       if(error)throw error;
       if(data&&data.error)throw new Error(data.error);
       const fs=(data&&Array.isArray(data.findings))?data.findings:[];
