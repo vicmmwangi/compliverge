@@ -3122,7 +3122,7 @@ function renderLegal(){
 /* ===== action plans (manual, no cost) ===== */
 const tierMeta={ia:{s:"IA",l:"Immediate Action",cls:"ia",cvar:"crit"},pa:{s:"PA",l:"Plan Action",cls:"pa",cvar:"high"},ca:{s:"CA",l:"Consider Action",cls:"ca",cvar:"warn"},mon:{s:"Monitor",l:"Monitor",cls:"mon",cvar:"ok"}};
 let apFindings=[];let apReport='';let apRel=[];let apReportText='';let apReportFile=null;
-function blankFinding(){return {id:uid(),f:'',ref:'',rec:'',tier:'pa',owner:'',due:'',rel:true};}
+function blankFinding(){return {id:uid(),f:'',ref:'',law:'',rec:'',tier:'pa',owner:'',due:'',rel:true};}
 /* Load a script once, on demand (never at page load, so sign-in is never blocked). */
 function loadScriptOnce(url){
   return new Promise((resolve,reject)=>{
@@ -3202,7 +3202,7 @@ async function loadReport(){
       if(data&&data.error)throw new Error(data.error);
       const fs=(data&&Array.isArray(data.findings))?data.findings:[];
       if(fs.length){
-        apFindings=fs.map(x=>({id:uid(),f:(x.f||'').trim(),ref:(x.ref||'').trim(),rec:(x.rec||'').trim(),tier:(['ia','pa','ca','mon'].includes(x.tier)?x.tier:'pa'),owner:'',due:'',rel:true})).filter(x=>x.f);
+        apFindings=fs.map(x=>({id:uid(),f:(x.f||'').trim(),ref:(x.ref||'').trim(),law:(x.law||'').trim(),rec:(x.rec||'').trim(),tier:(['ia','pa','ca','mon'].includes(x.tier)?x.tier:'pa'),owner:(x.owner||'').trim(),due:'',rel:true})).filter(x=>x.f);
         if(!apFindings.length)apFindings=[blankFinding()];
         else toast('Findings extracted',apFindings.length+' finding'+(apFindings.length===1?'':'s')+' read from your report, review each below');
       }else{
@@ -3230,6 +3230,7 @@ function renderTriage(){
       <div class="tri-body">
         <input class="mini-ctrl" style="height:34px;font-weight:600;margin-bottom:6px" placeholder="Finding (as written in the report)" value="${esc(x.f)}" oninput="fldSet('${x.id}','f',this.value)">
         <input class="mini-ctrl" style="height:32px;margin-bottom:6px" placeholder="Source ref / page (e.g. OSHA 2007 s.11 · p.6)" value="${esc(x.ref)}" oninput="fldSet('${x.id}','ref',this.value)">
+        <input class="mini-ctrl" style="height:32px;margin-bottom:6px" placeholder="Legal basis (Act &amp; regulator, e.g. OSHA 2007 · DOSHS)" value="${esc(x.law||'')}" oninput="fldSet('${x.id}','law',this.value)">
         <input class="mini-ctrl" style="height:32px" placeholder="Recommended action" value="${esc(x.rec)}" oninput="fldSet('${x.id}','rec',this.value)">
       </div>
       <div class="tri-controls">
@@ -3262,7 +3263,7 @@ function renderPlan(){
   document.getElementById('apSummary').innerHTML=order.map(t=>`<div class="ap-stat" style="border-top-color:var(--${tierMeta[t].cvar})"><div class="n" style="color:var(--${tierMeta[t].cvar})">${counts[t]}</div><div class="l">${tierMeta[t].s}, ${tierMeta[t].l}</div><div class="s">${t==='ia'?'Act now':t==='pa'?'Plan & budget':t==='ca'?'Improvement':'Monitor'}</div></div>`).join('');
   document.getElementById('apBoard').innerHTML=order.map(t=>{const items=rel.filter(x=>x.tier===t);return `<div class="ap-col"><div class="ap-col-head" style="background:var(--${tierMeta[t].cvar})"><i data-lucide="${t==='ia'?'alert-octagon':t==='pa'?'calendar-clock':t==='ca'?'lightbulb':'eye'}" style="width:15px;height:15px"></i> ${tierMeta[t].s} · ${tierMeta[t].l}<span class="cnt">${items.length}</span></div><div class="ap-col-body">${items.length?items.map(x=>`<div class="ap-cardx"><div class="f">${esc(x.f)}</div><div class="r">${esc(x.ref)}</div><div class="foot"><span>${esc(x.owner||'N/A')}</span><span class="due" style="color:var(--${tierMeta[t].cvar})">${x.due?fmtD(x.due):'Ongoing'}</span></div></div>`).join(''):'<div class="ap-empty">None</div>'}</div></div>`;}).join('');
   const sorted=[...rel].sort((a,b)=>order.indexOf(a.tier)-order.indexOf(b.tier));
-  document.getElementById('apTableBody').innerHTML=sorted.map((x,i)=>`<tr><td>${i+1}</td><td class="nm" style="max-width:220px">${esc(x.f)}</td><td><span class="tag-authority">${esc(x.ref||'N/A')}</span></td><td style="max-width:240px;color:var(--ink-2)">${esc(x.rec||'N/A')}</td><td><span class="tier-badge ${tierMeta[x.tier].cls}">${tierMeta[x.tier].s}</span></td><td>${esc(x.owner||'N/A')}</td><td><b>${x.due?fmtD(x.due):'Ongoing'}</b></td><td><span class="pill info">Open</span></td></tr>`).join('');
+  document.getElementById('apTableBody').innerHTML=sorted.map((x,i)=>`<tr><td>${i+1}</td><td class="nm" style="max-width:220px">${esc(x.f)}</td><td><span class="tag-authority">${esc(x.ref||'N/A')}</span>${x.law?`<div style="font-size:10px;color:var(--ink-3);margin-top:3px;line-height:1.3">${esc(x.law)}</div>`:''}</td><td style="max-width:240px;color:var(--ink-2)">${esc(x.rec||'N/A')}</td><td><span class="tier-badge ${tierMeta[x.tier].cls}">${tierMeta[x.tier].s}</span></td><td>${esc(x.owner||'N/A')}</td><td><b>${x.due?fmtD(x.due):'Ongoing'}</b></td><td><span class="pill info">Open</span></td></tr>`).join('');
   lucide.createIcons();
 }
 function setApView(v){document.getElementById('vbBoard').classList.toggle('on',v==='board');document.getElementById('vbTable').classList.toggle('on',v==='table');document.getElementById('apBoard').classList.toggle('hidden',v!=='board');document.getElementById('apTable').classList.toggle('hidden',v!=='table');lucide.createIcons();}
@@ -3270,7 +3271,7 @@ async function convertReminders(){
   if(!sb){toast('Not connected','Add your Supabase keys first');return;}
   const rel=apRel.length?apRel:apFindings.filter(f=>f.rel&&f.f.trim());
   const cc=(account()&&account().country)||'Kenya';
-  const rows=rel.filter(x=>x.due).map(x=>({account_id:CUR.accountId,cat:'Safety & Health',req:x.f,descr:x.rec||'',dept:'',owner:x.owner||'',country:cc,county:'',sector:'',facility:'',prio:(x.tier==='ia'?'crit':x.tier==='pa'?'high':x.tier==='ca'?'med':'low'),freq:'One-time',issue:null,expiry:x.due}));
+  const rows=rel.filter(x=>x.due).map(x=>({account_id:CUR.accountId,cat:'Safety & Health',req:x.f,descr:(x.law?('['+x.law+'] '):'')+(x.rec||''),dept:'',owner:x.owner||'',country:cc,county:'',sector:'',facility:'',prio:(x.tier==='ia'?'crit':x.tier==='pa'?'high':x.tier==='ca'?'med':'low'),freq:'One-time',issue:null,expiry:x.due}));
   if(!rows.length){toast('Nothing to create','Set due dates on findings to create reminders');return;}
   const {data,error}=await sb.from('reminders').insert(rows).select();
   if(error){toast('Could not create',error.message);return;}
@@ -3283,7 +3284,7 @@ async function convertReminders(){
 let apSavedId=null;
 async function saveActionPlan(){
   if(!sb||!CUR.accountId)return;
-  const items=apRel.map(x=>({f:x.f,ref:x.ref,rec:x.rec,tier:x.tier,owner:x.owner,due:x.due}));
+  const items=apRel.map(x=>({f:x.f,ref:x.ref,law:x.law||'',rec:x.rec,tier:x.tier,owner:x.owner,due:x.due}));
   const payload={account_id:CUR.accountId,title:apReport||'Untitled report',source:apReport||'',items};
   try{
     if(apSavedId){
@@ -3320,7 +3321,7 @@ function renderPlans(){
 function openPlan(idv){
   const p=getPlansA().find(x=>x.id===idv);if(!p)return;
   apSavedId=p.id;apReport=p.title;
-  apFindings=(p.items||[]).map(x=>({id:uid(),f:x.f||'',ref:x.ref||'',rec:x.rec||'',tier:x.tier||'pa',owner:x.owner||'',due:x.due||'',rel:true}));
+  apFindings=(p.items||[]).map(x=>({id:uid(),f:x.f||'',ref:x.ref||'',law:x.law||'',rec:x.rec||'',tier:x.tier||'pa',owner:x.owner||'',due:x.due||'',rel:true}));
   apRel=apFindings.slice();
   document.getElementById('ap-upload').classList.add('hidden');
   document.getElementById('ap-saved').classList.add('hidden');
@@ -3359,8 +3360,8 @@ function startNewPlan(){
 function planExportData(){
   const co=(account()&&account().company)||'Your company';const order=['ia','pa','ca','mon'];
   const sorted=[...apRel].sort((a,b)=>order.indexOf(a.tier)-order.indexOf(b.tier));
-  const rows=sorted.map((x,i)=>[i+1,x.f,x.ref||'N/A',x.rec||'N/A',tierMeta[x.tier].s+', '+tierMeta[x.tier].l,x.owner||'N/A',x.due?fmtD(x.due):'Ongoing']);
-  return{co,title:'Action Plan, '+apReport,head:['#','Finding','Source ref','Recommended action','Priority','Owner','Timeline'],rows};
+  const rows=sorted.map((x,i)=>[i+1,x.f,x.ref||'N/A',x.law||'N/A',x.rec||'N/A',tierMeta[x.tier].s+', '+tierMeta[x.tier].l,x.owner||'N/A',x.due?fmtD(x.due):'Ongoing']);
+  return{co,title:'Action Plan, '+apReport,head:['#','Finding','Source ref','Legal basis','Recommended action','Priority','Owner','Timeline'],rows};
 }
 function exportPlan(fmt){
   if(!apRel.length){toast('No plan','Generate the plan first');return;}
