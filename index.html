@@ -3242,9 +3242,18 @@ async function loadReport(){
     const tl=document.getElementById('triageList');
     if(tl){tl.innerHTML='<div class="card" style="padding:28px;text-align:center"><i data-lucide="loader" class="spin" style="width:26px;height:26px;color:var(--navy)"></i><div style="margin-top:12px;font-weight:600">CompliVerge AI is reading your report…</div><div class="muted" style="font-size:12px;margin-top:4px">Pulling out the findings and recommendations. This usually takes 10, 30 seconds.</div></div>';lucide.createIcons();}
     try{
-      const {data,error}=await sb.functions.invoke('compliverge-ai',{body:{mode:'extract',text:apReportText.slice(0,48000)}});
-      if(error)throw error;
-      if(data&&data.error)throw new Error(data.error);
+      // The free AI tier can be briefly busy/rate-limited; retry up to 3 times.
+      let data=null,lastErr=null;
+      for(let attempt=1;attempt<=3;attempt++){
+        try{
+          if(attempt>1&&tl){tl.innerHTML='<div class="card" style="padding:28px;text-align:center"><i data-lucide="loader" class="spin" style="width:26px;height:26px;color:var(--navy)"></i><div style="margin-top:12px;font-weight:600">The AI was briefly busy, retrying… ('+attempt+' of 3)</div><div class="muted" style="font-size:12px;margin-top:4px">Free AI tier, this can take a few seconds.</div></div>';lucide.createIcons();}
+          const res=await sb.functions.invoke('compliverge-ai',{body:{mode:'extract',text:apReportText.slice(0,48000)}});
+          if(res.error)throw res.error;
+          if(res.data&&res.data.error)throw new Error(res.data.error);
+          data=res.data;lastErr=null;break;
+        }catch(err){lastErr=err;if(attempt<3)await new Promise(r=>setTimeout(r,2500));}
+      }
+      if(lastErr)throw lastErr;
       const fs=(data&&Array.isArray(data.findings))?data.findings:[];
       if(fs.length){
         apFindings=fs.map(x=>({id:uid(),f:(x.f||'').trim(),ref:(x.ref||'').trim(),law:(x.law||'').trim(),rec:(x.rec||'').trim(),tier:(['ia','pa','ca','mon'].includes(x.tier)?x.tier:'pa'),owner:(x.owner||'').trim(),due:'',rel:true})).filter(x=>x.f);
@@ -3256,7 +3265,7 @@ async function loadReport(){
       }
     }catch(e){
       apFindings=[blankFinding()];
-      toast('Auto-read unavailable',(e&&e.message?String(e.message).slice(0,80):'Add findings manually below'));
+      toast('AI is busy right now','The free AI tier was busy. Go Back and click Continue to retry, or add findings manually below.');
     }
   }else{
     if(!apFindings.length)apFindings=[blankFinding()];
