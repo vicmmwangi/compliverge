@@ -3123,6 +3123,21 @@ function renderLegal(){
 const tierMeta={ia:{s:"IA",l:"Immediate Action",cls:"ia",cvar:"crit"},pa:{s:"PA",l:"Plan Action",cls:"pa",cvar:"high"},ca:{s:"CA",l:"Consider Action",cls:"ca",cvar:"warn"},mon:{s:"Monitor",l:"Monitor",cls:"mon",cvar:"ok"}};
 let apFindings=[];let apReport='';let apRel=[];let apReportText='';let apReportFile=null;
 function blankFinding(){return {id:uid(),f:'',ref:'',law:'',rec:'',tier:'pa',owner:'',due:'',rel:true};}
+/* Split a long report into sections for extraction, breaking on sentence/line
+   boundaries so a finding is never cut in half. */
+function splitForExtraction(text,size){
+  size=size||36000;const chunks=[];let i=0;
+  while(i<text.length){
+    let end=Math.min(i+size,text.length);
+    if(end<text.length){
+      const slice=text.slice(i,end);
+      const br=Math.max(slice.lastIndexOf('\n'),slice.lastIndexOf('. '));
+      if(br>size*0.5)end=i+br+1;
+    }
+    chunks.push(text.slice(i,end));i=end;
+  }
+  return chunks;
+}
 /* Load a script once, on demand (never at page load, so sign-in is never blocked). */
 function loadScriptOnce(url){
   return new Promise((resolve,reject)=>{
@@ -3177,7 +3192,7 @@ async function extractFileText(file,onProg){
     if(!window.pdfjsLib)throw new Error('PDF reader could not load, check your internet and try again');
     const buf=await file.arrayBuffer();
     const pdf=await pdfjsLib.getDocument({data:buf}).promise;
-    const max=Math.min(pdf.numPages,40);const out=[];
+    const max=Math.min(pdf.numPages,150);const out=[];
     for(let i=1;i<=max;i++){const pg=await pdf.getPage(i);const tc=await pg.getTextContent();out.push(tc.items.map(it=>it.str).join(' '));}
     let text=out.join('\n\n').trim();
     // Scanned/image-only PDF (empty text layer) OR a text layer that extracts as
@@ -3242,23 +3257,40 @@ async function loadReport(){
     const tl=document.getElementById('triageList');
     if(tl){tl.innerHTML='<div class="card" style="padding:28px;text-align:center"><i data-lucide="loader" class="spin" style="width:26px;height:26px;color:var(--navy)"></i><div style="margin-top:12px;font-weight:600">CompliVerge AI is reading your report…</div><div class="muted" style="font-size:12px;margin-top:4px">Pulling out the findings and recommendations. This usually takes 10, 30 seconds.</div></div>';lucide.createIcons();}
     try{
-      // The free AI tier can be briefly busy/rate-limited; retry up to 3 times.
-      let data=null,lastErr=null;
-      for(let attempt=1;attempt<=3;attempt++){
-        try{
-          if(attempt>1&&tl){tl.innerHTML='<div class="card" style="padding:28px;text-align:center"><i data-lucide="loader" class="spin" style="width:26px;height:26px;color:var(--navy)"></i><div style="margin-top:12px;font-weight:600">The AI was briefly busy, retrying… ('+attempt+' of 3)</div><div class="muted" style="font-size:12px;margin-top:4px">Free AI tier, this can take a few seconds.</div></div>';lucide.createIcons();}
-          const res=await sb.functions.invoke('compliverge-ai',{body:{mode:'extract',text:apReportText.slice(0,48000)}});
-          if(res.error)throw res.error;
-          if(res.data&&res.data.error)throw new Error(res.data.error);
-          data=res.data;lastErr=null;break;
-        }catch(err){lastErr=err;if(attempt<3)await new Promise(r=>setTimeout(r,2500));}
+      // Process the WHOLE report in sections (large audit reports are long),
+      // extracting from each and merging - so later-page findings aren't lost.
+      const chunks=splitForExtraction(apReportText,36000).slice(0,12);
+      const multi=chunks.length>1;
+      const all=[];const seen=new Set();let anyOk=false,lastErr=null;
+      const spin=(msg)=>{if(tl){tl.innerHTML='<div class="card" style="padding:28px;text-align:center"><i data-lucide="loader" class="spin" style="width:26px;height:26px;color:var(--navy)"></i><div style="margin-top:12px;font-weight:600">'+msg+'</div><div class="muted" style="font-size:12px;margin-top:4px">Pulling out the findings and recommendations.</div></div>';lucide.createIcons();}};
+      for(let ci=0;ci<chunks.length;ci++){
+        spin('CompliVerge AI is reading your report'+(multi?(' — section '+(ci+1)+' of '+chunks.length):'')+'…');
+        // The free AI tier can be briefly busy/rate-limited; retry each section up to 3 times.
+        let data=null,err=null;
+        for(let attempt=1;attempt<=3;attempt++){
+          try{
+            if(attempt>1)spin('Section '+(ci+1)+(multi?(' of '+chunks.length):'')+' — AI briefly busy, retrying ('+attempt+' of 3)…');
+            const res=await sb.functions.invoke('compliverge-ai',{body:{mode:'extract',text:chunks[ci]}});
+            if(res.error)throw res.error;
+            if(res.data&&res.data.error)throw new Error(res.data.error);
+            data=res.data;err=null;break;
+          }catch(e2){err=e2;if(attempt<3)await new Promise(r=>setTimeout(r,2500));}
+        }
+        if(err){lastErr=err;continue;} // a failed section is skipped; keep the rest
+        anyOk=true;
+        const fs=(data&&Array.isArray(data.findings))?data.findings:[];
+        for(const x of fs){
+          const f=(x.f||'').trim();if(!f)continue;
+          const key=f.toLowerCase().replace(/\s+/g,' ').slice(0,90);
+          if(seen.has(key))continue;seen.add(key);
+          all.push({id:uid(),f,ref:(x.ref||'').trim(),law:(x.law||'').trim(),rec:(x.rec||'').trim(),tier:(['ia','pa','ca','mon'].includes(x.tier)?x.tier:'pa'),owner:(x.owner||'').trim(),due:'',rel:true});
+        }
+        if(ci<chunks.length-1)await new Promise(r=>setTimeout(r,500)); // gentle on the free tier
       }
-      if(lastErr)throw lastErr;
-      const fs=(data&&Array.isArray(data.findings))?data.findings:[];
-      if(fs.length){
-        apFindings=fs.map(x=>({id:uid(),f:(x.f||'').trim(),ref:(x.ref||'').trim(),law:(x.law||'').trim(),rec:(x.rec||'').trim(),tier:(['ia','pa','ca','mon'].includes(x.tier)?x.tier:'pa'),owner:(x.owner||'').trim(),due:'',rel:true})).filter(x=>x.f);
-        if(!apFindings.length)apFindings=[blankFinding()];
-        else toast('Findings extracted',apFindings.length+' finding'+(apFindings.length===1?'':'s')+' read from your report, review each below');
+      if(!anyOk&&lastErr)throw lastErr;
+      if(all.length){
+        apFindings=all;
+        toast('Findings extracted',all.length+' finding'+(all.length===1?'':'s')+' read from your report'+(multi?(' across '+chunks.length+' sections'):'')+', review each below');
       }else{
         apFindings=[blankFinding()];
         toast('No findings detected','Couldn’t find findings automatically, add them manually below');
