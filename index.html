@@ -1097,7 +1097,7 @@ html.dark .sc-sol .rec{color:#79cf5c}
           <div class="fg"><label>KRA PIN</label><input id="suPin" class="ctrl" placeholder="Optional"></div>
           <div class="fg full" style="border-top:1px solid var(--line);padding-top:16px;margin-top:2px"><label>Your full name <span class="req">*</span></label><input id="suName" class="ctrl" placeholder="e.g. Jane Doe"></div>
           <div class="fg full"><label>Your work email <span class="req">*</span></label><input id="suEmail" class="ctrl" type="email" placeholder="you@company.com"></div>
-          <div class="fg"><label>Password <span class="req">*</span></label><input id="suPass" class="ctrl" type="password" placeholder="At least 6 characters"></div>
+          <div class="fg"><label>Password <span class="req">*</span></label><input id="suPass" class="ctrl" type="password" placeholder="8+ chars: letters, a number & a symbol"></div>
           <div class="fg"><label>Confirm <span class="req">*</span></label><input id="suPass2" class="ctrl" type="password" placeholder="••••••••"></div>
           <div class="fg full" style="border-top:1px solid var(--line);padding-top:16px;margin-top:2px"><label>Have a join code? <span class="muted" style="font-weight:400">(optional)</span></label><input id="suJoin" class="ctrl" placeholder="Paste a code to join an existing company"><span class="muted" style="font-size:11px;margin-top:4px;display:block">Leave blank to create a new company. With a code, you join your teammate's account and the company fields above are ignored.</span></div>
           <div class="fg full"><label style="display:flex;gap:9px;align-items:flex-start;font-weight:400;font-size:12px;color:var(--ink-2);cursor:pointer"><input id="suTerms" type="checkbox" style="margin-top:2px"> I have read and agree to the <a href="#" onclick="event.preventDefault();event.stopPropagation();openLegal('tos')" style="color:var(--navy);font-weight:600;text-decoration:underline">CompliVerge Terms of Service</a> and <a href="#" onclick="event.preventDefault();event.stopPropagation();openLegal('privacy')" style="color:var(--navy);font-weight:600;text-decoration:underline">Privacy Policy</a> <span class="muted" id="termsVer"></span>. <span class="req">*</span></label></div>
@@ -3533,7 +3533,7 @@ async function doSignup(){
   const join=(g('suJoin').value||'').trim();
   if(!name||!email){toast('Missing details','Fill in your name and email');return;}
   if(!join&&!company){toast('Company name needed','Add a company name, or paste a join code to join one');return;}
-  if(pass.length<6){toast('Weak password','Use at least 6 characters');return;}
+  if(pass.length<8||!/[A-Za-z]/.test(pass)||!/[0-9]/.test(pass)||!/[^A-Za-z0-9]/.test(pass)){toast('Weak password','Use at least 8 characters with a mix of letters, a number and a symbol');return;}
   if(pass!==pass2){toast('Passwords differ','Re-enter to confirm');return;}
   if(!g('suTerms').checked){toast('Terms','Please accept the terms to continue');return;}
   const btnTxt='Creating…';toast('Working…','Setting up your account');
