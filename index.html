@@ -1652,21 +1652,23 @@ html.dark .sc-sol .rec{color:#79cf5c}
             </div>
             <div class="card set-panel" id="panel-billing" style="padding:24px 26px">
               <h3 style="font-size:16px;margin-bottom:4px">Plan &amp; billing</h3>
-              <p class="muted" style="font-size:12.5px;margin-bottom:18px">You're on the Standard plan. One company per account, up to 3 users, upgrade to add more user seats.</p>
-              <div class="grid g3">
-                <div class="plan-card cur"><span class="plan-tag" style="background:#042348">Current</span>
-                  <div class="pn">Standard</div><div class="pp">KES 12,000<small>/mo</small></div>
-                  <ul><li><i data-lucide="check"></i> Up to 3 users</li><li><i data-lucide="check"></i> Unlimited branches</li><li><i data-lucide="check"></i> All compliance domains</li><li><i data-lucide="check"></i> Standard AI advisor</li></ul>
-                  <button class="btn btn-ghost" style="width:100%;justify-content:center">Your plan</button></div>
-                <div class="plan-card"><div class="pn">Team</div><div class="pp">KES 32,000<small>/mo</small></div>
-                  <ul><li><i data-lucide="check"></i> Up to 10 users</li><li><i data-lucide="check"></i> Approval workflows</li><li><i data-lucide="check"></i> Report scheduling</li><li><i data-lucide="check"></i> Priority support</li></ul>
-                  <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="toast('Upgrade','Team plan selected, 10 users')">Upgrade</button></div>
-                <div class="plan-card best"><span class="plan-tag" style="background:linear-gradient(135deg,#6c0a1b,#042348)">Best value</span>
-                  <div class="pn">Business + AI</div><div class="pp">KES 68,000<small>/mo</small></div>
-                  <ul><li><i data-lucide="check"></i> Up to 25 users</li><li><i data-lucide="check"></i> Advanced AI advisor</li><li><i data-lucide="check"></i> Auto legislation updates</li><li><i data-lucide="check"></i> API &amp; integrations</li></ul>
-                  <button class="btn btn-ai" style="width:100%;justify-content:center" onclick="toast('Upgrade','Business + AI selected, 25 users')"><i data-lucide="sparkles"></i> Upgrade</button></div>
+              <p class="muted" style="font-size:12.5px;margin-bottom:18px">CompliVerge is free to use while we're in early access, everything you need to keep your business compliant, at no cost.</p>
+              <div class="plan-card cur" style="max-width:560px">
+                <span class="plan-tag" style="background:#042348">Current plan</span>
+                <div class="pn">CompliVerge Free</div><div class="pp">Free<small> · no card required</small></div>
+                <ul>
+                  <li><i data-lucide="check"></i> Track every compliance obligation and deadline</li>
+                  <li><i data-lucide="check"></i> Automatic email reminders and a live compliance calendar</li>
+                  <li><i data-lucide="check"></i> AI compliance advisor, grounded in the law</li>
+                  <li><i data-lucide="check"></i> Turn audit reports into prioritised action plans</li>
+                  <li><i data-lucide="check"></i> Unlimited branches, across every compliance domain</li>
+                </ul>
+                <button class="btn btn-ghost" style="width:100%;justify-content:center" disabled>Your current plan</button>
               </div>
-              <p class="muted" style="font-size:11.5px;margin-top:16px">Need more than 25 users or on-premise hosting? <b style="color:var(--navy)">Contact sales for Enterprise.</b></p>
+              <div style="margin-top:18px;max-width:560px;border:1px dashed var(--line);border-radius:14px;padding:18px 20px">
+                <div style="display:flex;align-items:center;gap:9px;font-family:'Poppins';font-weight:600;font-size:14px"><i data-lucide="sparkles" style="width:17px;height:17px;color:var(--burgundy)"></i> Paid plans are coming soon</div>
+                <p class="muted" style="font-size:12.5px;margin-top:7px;line-height:1.6">We're building premium plans with advanced features: more team seats, an advanced AI advisor, automatic legislation updates, approval workflows, report scheduling, API &amp; integrations, and priority support. Your account stays completely free until then, and we'll give you plenty of notice before anything changes.</p>
+              </div>
             </div>
             <div class="card set-panel" id="panel-notif" style="padding:24px 26px">
               <h3 style="font-size:16px;margin-bottom:4px">Notification preferences</h3>
@@ -2222,7 +2224,7 @@ function remindCustomToggle(){
 }
 /* SMS & WhatsApp reminder channels are not in the Free trial */
 function freeTrialChannel(name){
-  toast('Not available on the Free trial', name+' reminders are a paid feature and are not available on the Free trial. Email reminders are included free, upgrade your plan to switch on '+name+'.');
+  toast('Coming soon', name+' reminders are an advanced feature coming with CompliVerge’s paid plans. Email reminders are included free for now.');
 }
 /* ===== resolve / renew ===== */
 let resolveId=null;
@@ -3061,7 +3063,7 @@ function renderUsers(){
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Invite a teammate</div>
       <p class="muted" style="font-size:12px;margin-bottom:12px">Share this join code. Your teammate opens CompliVerge, clicks <b>Create a company account</b>, enters this code in <b>“Have a join code?”</b>, and signs up with their own email &amp; password to join this account.</p>
       <div style="display:flex;align-items:center;gap:10px"><div style="font-family:'Poppins';font-size:22px;font-weight:700;letter-spacing:.14em;color:var(--navy);background:var(--brand-soft);padding:10px 16px;border-radius:11px">${esc(jc)}</div><button class="btn btn-ghost" onclick="copyJoinCode()"><i data-lucide="copy"></i> Copy</button></div></div>`;}
-  else{seat.innerHTML=`<div class="locked-seat"><div class="lk"><i data-lucide="lock"></i></div><div style="flex:1"><div class="un">Add another user</div><div class="ue">You've reached the 3-user limit</div></div><button class="btn btn-ghost" onclick="setTab('billing',document.querySelectorAll('.set-tab')[1])">See plans</button></div>`;}
+  else{seat.innerHTML=`<div class="locked-seat"><div class="lk"><i data-lucide="lock"></i></div><div style="flex:1"><div class="un">Add another user</div><div class="ue">You've reached the 3-user limit. More seats are coming with paid plans.</div></div><button class="btn btn-ghost" onclick="setTab('billing',document.querySelectorAll('.set-tab')[1])">Learn more</button></div>`;}
   lucide.createIcons();
 }
 async function changeRole(idv,v){const {error}=await sb.from('profiles').update({role:v}).eq('id',idv);if(error){toast('Error',error.message);return;}const u=DB.users.find(x=>x.id===idv);if(u)u.role=v;renderUsers();toast('Role updated',esc(u?u.name:'User')+' is now '+roleName[v]);}
