@@ -1457,9 +1457,9 @@ html.dark .sc-sol .rec{color:#79cf5c}
           <div class="grid g2" style="grid-template-columns:1.6fr 1fr;align-items:center;gap:22px">
             <label class="dropzone" id="apDrop" for="apFile" style="display:block">
               <div class="ic"><i data-lucide="file-up"></i></div>
-              <h4 id="apDropTitle">Choose any audit, assessment or inspection report</h4>
-              <p>PDF, Word (.docx), text, or a scan/photo · safety, environmental, energy, financial, data-protection, quality, legal, any report with findings or recommendations. Scanned PDFs and photos are read with OCR. CompliVerge AI extracts the findings automatically.</p>
-              <input id="apFile" type="file" accept=".pdf,.doc,.docx,.txt,image/*" style="display:none" onchange="onReportPicked(this)">
+              <h4 id="apDropTitle">Choose one or more reports to combine</h4>
+              <p>PDF, Word (.docx), text, or a scan/photo · add several files and CompliVerge builds <b>one</b> action plan for the whole report. A large report can be split into parts and uploaded together. Scanned PDFs and photos are read with OCR. CompliVerge AI extracts the findings automatically.</p>
+              <input id="apFile" type="file" accept=".pdf,.doc,.docx,.txt,image/*" multiple style="display:none" onchange="onReportPicked(this)">
             </label>
             <div>
               <div class="fg" style="margin-bottom:14px"><label>Report name</label>
@@ -1469,6 +1469,7 @@ html.dark .sc-sol .rec{color:#79cf5c}
               <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="loadReport()"><i data-lucide="arrow-right"></i> Continue to findings</button>
             </div>
           </div>
+          <div id="apFileList" style="display:none;margin-top:18px"></div>
         </div>
 
         <!-- SAVED PLANS -->
@@ -3121,12 +3122,12 @@ function renderLegal(){
 
 /* ===== action plans (manual, no cost) ===== */
 const tierMeta={ia:{s:"IA",l:"Immediate Action",cls:"ia",cvar:"crit"},pa:{s:"PA",l:"Plan Action",cls:"pa",cvar:"high"},ca:{s:"CA",l:"Consider Action",cls:"ca",cvar:"warn"},mon:{s:"Monitor",l:"Monitor",cls:"mon",cvar:"ok"}};
-let apFindings=[];let apReport='';let apRel=[];let apReportText='';let apReportFile=null;
+let apFindings=[];let apReport='';let apRel=[];let apReportText='';let apReportFile=null;let apReportFiles=[];
 function blankFinding(){return {id:uid(),f:'',ref:'',law:'',rec:'',tier:'pa',owner:'',due:'',rel:true};}
 /* Split a long report into sections for extraction, breaking on sentence/line
    boundaries so a finding is never cut in half. */
 function splitForExtraction(text,size){
-  size=size||36000;const chunks=[];let i=0;
+  size=size||36000;const overlap=1500;const chunks=[];let i=0;
   while(i<text.length){
     let end=Math.min(i+size,text.length);
     if(end<text.length){
@@ -3134,7 +3135,9 @@ function splitForExtraction(text,size){
       const br=Math.max(slice.lastIndexOf('\n'),slice.lastIndexOf('. '));
       if(br>size*0.5)end=i+br+1;
     }
-    chunks.push(text.slice(i,end));i=end;
+    chunks.push(text.slice(i,end));
+    if(end>=text.length)break;
+    i=Math.max(end-overlap,i+1); // overlap so a finding on a boundary appears whole in the next section
   }
   return chunks;
 }
@@ -3217,36 +3220,65 @@ async function extractFileText(file,onProg){
   return await file.text(); // .txt and anything else: treat as text
 }
 async function onReportPicked(input){
-  const f=input.files&&input.files[0];if(!f)return;
-  if(f.size>40*1024*1024){toast('File too large','Report is over 40 MB, please upload a smaller PDF/Word file');input.value='';return;}
-  apReportFile=f;apReportText='';apFindings=[];
-  document.getElementById('apDropTitle').textContent=f.name;
-  const nm=document.getElementById('apReportName');if(!nm.value)nm.value=f.name.replace(/\.[^.]+$/,'');
-  const st=document.getElementById('apReadStatus');
-  if(st){st.style.display='';st.innerHTML='<i data-lucide="loader" class="spin"></i> Reading '+esc(f.name)+'…';lucide.createIcons();}
-  try{
+  const files=Array.from(input.files||[]);input.value='';
+  if(!files.length)return;
+  for(const f of files){
+    if(f.size>40*1024*1024){toast('File too large',esc(f.name)+' is over 40 MB, skipped');continue;}
+    const id=uid();
+    apReportFiles.push({id,name:f.name,chars:0,text:'',reading:true,error:''});
+    renderApFileList();updateApReadStatus();
     const onProg=(ev,info)=>{
-      if(!st)return;
-      if(ev==='ocr-start'){st.innerHTML='<i data-lucide="loader" class="spin"></i> This looks like a scanned report. Reading it with OCR'+(info&&info.pages>1?(', up to '+info.pages+' pages'):'')+'… this can take a minute, please wait.';}
-      else if(ev==='ocr-page'){st.innerHTML='<i data-lucide="loader" class="spin"></i> OCR reading page '+info.page+' of '+info.pages+'…';}
-      else if(ev==='ocr-progress'){st.innerHTML='<i data-lucide="loader" class="spin"></i> OCR reading… '+info.pct+'%';}
-      if(window.lucide)lucide.createIcons();
+      const row=document.getElementById('apfstat-'+id);if(!row)return;
+      if(ev==='ocr-start')row.textContent='scanned, OCR…';
+      else if(ev==='ocr-page')row.textContent='OCR '+info.page+'/'+info.pages;
+      else if(ev==='ocr-progress')row.textContent='OCR '+info.pct+'%';
     };
-    const txt=await extractFileText(f,onProg);
-    apReportText=(txt||'').replace(/[ \t]+/g,' ').trim();
-    if(st){
-      if(apReportText.length<40){st.innerHTML='<span style="color:var(--high)"><b>Found almost no text.</b> If this is a scanned/photo PDF, CompliVerge AI can’t read it, you can still type findings manually on the next screen.</span>';}
-      else{st.innerHTML='<span style="color:var(--ok)"><i data-lucide="check-circle" style="width:14px;height:14px;vertical-align:-2px"></i> Read <b>'+apReportText.length.toLocaleString()+'</b> characters. Click <b>Continue</b>, CompliVerge AI will pull out the findings.</span>';}
-      lucide.createIcons();
+    try{
+      const txt=await extractFileText(f,onProg);
+      const clean=(txt||'').replace(/[ \t]+/g,' ').trim();
+      const rec=apReportFiles.find(x=>x.id===id);
+      if(rec){rec.text=clean;rec.chars=clean.length;rec.reading=false;rec.error=clean.length<40?'no readable text (scanned?)':'';}
+    }catch(e){
+      const rec=apReportFiles.find(x=>x.id===id);
+      if(rec){rec.reading=false;rec.error=(e.message||'could not read').slice(0,60);}
     }
-  }catch(e){
-    apReportText='';
-    if(st){st.innerHTML='<span style="color:var(--high)">'+esc(e.message||'Could not read this file')+'</span>';lucide.createIcons();}
+    renderApFileList();updateApReadStatus();
   }
+  const nm=document.getElementById('apReportName');
+  if(nm&&!nm.value&&apReportFiles.length){nm.value=apReportFiles.length===1?apReportFiles[0].name.replace(/\.[^.]+$/,''):'Combined report';}
+}
+function renderApFileList(){
+  const box=document.getElementById('apFileList');if(!box)return;
+  if(!apReportFiles.length){box.style.display='none';box.innerHTML='';return;}
+  box.style.display='';
+  const total=apReportFiles.reduce((a,x)=>a+(x.chars||0),0);
+  box.innerHTML='<div style="font-weight:600;font-size:13px;margin-bottom:9px">Documents in this report ('+apReportFiles.length+')</div>'+
+    apReportFiles.map(x=>'<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px">'+
+      '<i data-lucide="file-text" style="width:16px;height:16px;color:var(--navy);flex-shrink:0"></i>'+
+      '<span style="flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(x.name)+'</span>'+
+      '<span id="apfstat-'+x.id+'" style="font-size:11px;color:'+(x.error?'var(--high)':'var(--ink-3)')+';white-space:nowrap">'+(x.reading?'reading…':(x.error?esc(x.error):(x.chars.toLocaleString()+' chars')))+'</span>'+
+      '<button onclick="removeApFile(\''+x.id+'\')" style="border:none;background:none;cursor:pointer;color:var(--ink-3);padding:0 2px;font-size:18px;line-height:1;flex-shrink:0" title="Remove">&times;</button>'+
+    '</div>').join('')+
+    '<div style="font-size:12px;color:var(--ink-2);margin-top:4px">Total readable text: <b>'+total.toLocaleString()+'</b> characters'+(total>1700000?' · very large':'')+'. Add more files or click <b>Continue to findings</b>.</div>';
+  if(window.lucide)lucide.createIcons();
+}
+function removeApFile(id){apReportFiles=apReportFiles.filter(x=>x.id!==id);renderApFileList();updateApReadStatus();}
+function updateApReadStatus(){
+  const st=document.getElementById('apReadStatus');if(!st)return;
+  if(!apReportFiles.length){st.style.display='none';st.innerHTML='';return;}
+  st.style.display='';
+  const ready=apReportFiles.filter(x=>!x.reading&&x.chars>=40);
+  const total=ready.reduce((a,x)=>a+x.chars,0);
+  if(apReportFiles.some(x=>x.reading)){st.innerHTML='<i data-lucide="loader" class="spin"></i> Reading documents…';}
+  else if(!total){st.innerHTML='<span style="color:var(--high)"><b>No readable text found.</b> These may be scanned images CompliVerge couldn’t read. You can still add findings manually on the next screen.</span>';}
+  else{st.innerHTML='<span style="color:var(--ok)"><i data-lucide="check-circle" style="width:14px;height:14px;vertical-align:-2px"></i> <b>'+ready.length+'</b> document'+(ready.length===1?'':'s')+' ready, <b>'+total.toLocaleString()+'</b> characters. Click <b>Continue to findings</b>.</span>';}
+  if(window.lucide)lucide.createIcons();
 }
 async function loadReport(){
   apSavedId=null;
-  apReport=document.getElementById('apReportName').value.trim()||(apReportFile?apReportFile.name.replace(/\.[^.]+$/,''):'')||'Untitled report';
+  const ready=apReportFiles.filter(x=>!x.reading&&x.chars>=40);
+  apReportText=ready.map(x=>(ready.length>1?('=== DOCUMENT: '+x.name+' ===\n'):'')+x.text).join('\n\n');
+  apReport=document.getElementById('apReportName').value.trim()||(apReportFiles[0]?apReportFiles[0].name.replace(/\.[^.]+$/,''):'')||'Untitled report';
   setTxt('apReportTitle',apReport);
   document.getElementById('ap-upload').classList.add('hidden');document.getElementById('ap-plan').classList.add('hidden');
   document.getElementById('ap-saved').classList.add('hidden');
@@ -3259,17 +3291,28 @@ async function loadReport(){
     try{
       // Process the WHOLE report in sections (large audit reports are long),
       // extracting from each and merging - so later-page findings aren't lost.
-      const chunks=splitForExtraction(apReportText,36000).slice(0,12);
+      const MAX_SECTIONS=100;
+      let chunks=splitForExtraction(apReportText,36000);
+      const over=chunks.length>MAX_SECTIONS;
+      if(over)chunks=chunks.slice(0,MAX_SECTIONS);
       const multi=chunks.length>1;
       const all=[];const seen=new Set();let anyOk=false,lastErr=null;
-      const spin=(msg)=>{if(tl){tl.innerHTML='<div class="card" style="padding:28px;text-align:center"><i data-lucide="loader" class="spin" style="width:26px;height:26px;color:var(--navy)"></i><div style="margin-top:12px;font-weight:600">'+msg+'</div><div class="muted" style="font-size:12px;margin-top:4px">Pulling out the findings and recommendations.</div></div>';lucide.createIcons();}};
+      const setLoad=(msg,pct)=>{
+        if(!tl)return;
+        const bar=(pct!=null)?('<div style="height:9px;background:var(--line);border-radius:99px;margin:16px auto 0;max-width:340px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:var(--navy);border-radius:99px;transition:width .4s ease"></div></div><div class="muted" style="font-size:11px;margin-top:6px;font-weight:600">'+pct+'% · section '+(cur+1)+' of '+chunks.length+'</div>'):'';
+        tl.innerHTML='<div class="card" style="padding:28px;text-align:center"><i data-lucide="loader" class="spin" style="width:26px;height:26px;color:var(--navy)"></i><div style="margin-top:12px;font-weight:600">'+msg+'</div><div class="muted" style="font-size:12px;margin-top:4px">Pulling out the findings and recommendations.</div>'+bar+'</div>';
+        lucide.createIcons();
+      };
+      let cur=0;
       for(let ci=0;ci<chunks.length;ci++){
-        spin('CompliVerge AI is reading your report'+(multi?(' — section '+(ci+1)+' of '+chunks.length):'')+'…');
+        cur=ci;
+        const pct=multi?Math.round(ci/chunks.length*100):null;
+        setLoad(multi?('Reading your report — section '+(ci+1)+' of '+chunks.length+'…'):'CompliVerge AI is reading your report…',pct);
         // The free AI tier can be briefly busy/rate-limited; retry each section up to 3 times.
         let data=null,err=null;
         for(let attempt=1;attempt<=3;attempt++){
           try{
-            if(attempt>1)spin('Section '+(ci+1)+(multi?(' of '+chunks.length):'')+' — AI briefly busy, retrying ('+attempt+' of 3)…');
+            if(attempt>1)setLoad('Section '+(ci+1)+(multi?(' of '+chunks.length):'')+' — AI briefly busy, retrying ('+attempt+' of 3)…',pct);
             const res=await sb.functions.invoke('compliverge-ai',{body:{mode:'extract',text:chunks[ci]}});
             if(res.error)throw res.error;
             if(res.data&&res.data.error)throw new Error(res.data.error);
@@ -3290,7 +3333,8 @@ async function loadReport(){
       if(!anyOk&&lastErr)throw lastErr;
       if(all.length){
         apFindings=all;
-        toast('Findings extracted',all.length+' finding'+(all.length===1?'':'s')+' read from your report'+(multi?(' across '+chunks.length+' sections'):'')+', review each below');
+        toast('Findings extracted',all.length+' finding'+(all.length===1?'':'s')+' read'+(ready.length>1?(' from '+ready.length+' documents'):'')+(multi?(' across '+chunks.length+' sections'):'')+', review each below');
+        if(over)toast('Report was very large','CompliVerge processed the first '+MAX_SECTIONS+' sections. If findings seem missing, split the report into smaller documents and upload them together here.');
       }else{
         apFindings=[blankFinding()];
         toast('No findings detected','Couldn’t find findings automatically, add them manually below');
@@ -3446,9 +3490,10 @@ function apInit(){
   if(!planShown&&!triageShown){document.getElementById('ap-upload').classList.remove('hidden');document.getElementById('ap-saved').classList.remove('hidden');}
 }
 function startNewPlan(){
-  apSavedId=null;apReport='';apFindings=[];apRel=[];apReportText='';apReportFile=null;
-  document.getElementById('apReportName').value='';document.getElementById('apDropTitle').textContent='Choose any audit, assessment or inspection report';
+  apSavedId=null;apReport='';apFindings=[];apRel=[];apReportText='';apReportFile=null;apReportFiles=[];
+  document.getElementById('apReportName').value='';document.getElementById('apDropTitle').textContent='Choose one or more reports to combine';
   const st=document.getElementById('apReadStatus');if(st){st.style.display='none';st.innerHTML='';}
+  if(typeof renderApFileList==='function')renderApFileList();
   const fe=document.getElementById('apFile');if(fe)fe.value='';
   document.getElementById('ap-plan').classList.add('hidden');document.getElementById('ap-triage').classList.add('hidden');
   document.getElementById('ap-upload').classList.remove('hidden');document.getElementById('ap-saved').classList.remove('hidden');
