@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>(function(){try{if(localStorage.getItem("cv-theme")==="dark"){var r=document.documentElement;r.classList.add("dark");r.style.colorScheme="dark";}}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem("cv-theme");var r=document.documentElement;if(t==="dark"){r.classList.add("cv-dark");r.style.colorScheme="dark";}else if(t==="light"){r.classList.add("cv-light");r.style.colorScheme="light";}}catch(e){}})();</script>
 <title>The Complete Business Compliance Checklist for Kenya (2026) | CompliVerge</title>
 <meta name="description" content="A single checklist of every compliance obligation a business in Kenya must meet — BRS annual returns, KRA tax, DOSHS safety audits, NEMA environmental licences, SHIF/NSSF/PAYE payroll and data protection — with the key deadlines.">
 <meta name="keywords" content="business compliance checklist Kenya, compliance requirements Kenya, statutory compliance Kenya, company annual returns Kenya, business licences Kenya, regulatory compliance Kenya, data protection ODPC">
@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://compliverge.com/guides/business-compliance-checklist-kenya.html">
 <meta property="og:site_name" content="CompliVerge">
 <link rel="icon" href="/logo.png">
-<link rel="stylesheet" href="/guides/guide.css">
+<link rel="stylesheet" href="/guides/guide.css?v=5">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Article","headline":"The Business Compliance Checklist for Kenya (2026)","description":"Every compliance obligation a business in Kenya must meet, with the key deadlines.","author":{"@type":"Organization","name":"CompliVerge"},"publisher":{"@type":"Organization","name":"CompliVerge","logo":{"@type":"ImageObject","url":"https://compliverge.com/logo.png"}},"mainEntityOfPage":"https://compliverge.com/guides/business-compliance-checklist-kenya.html","about":["Business compliance Kenya","Regulatory compliance","Statutory deadlines"]}
 </script>
@@ -30,7 +30,7 @@
 <body>
 <header class="site">
   <a class="brand" href="https://compliverge.com/"><img src="/logo.png" alt="CompliVerge"><b>Compli<span class="a">Verge</span></b></a>
-  <a class="cta" href="https://compliverge.com/">Build your compliance register</a>
+  <div class="header-cta"><button class="themetog" id="themeToggle" type="button" aria-label="Toggle dark mode" onclick="cvToggleTheme()">☾</button><a class="cta" href="https://compliverge.com/">Build your compliance register</a></div>
 </header>
 
 <div class="wrap">
@@ -94,5 +94,12 @@
 <footer class="site"><div class="wrap">
   &copy; 2026 CompliVerge · A smart, AI-powered <a href="https://compliverge.com/">business compliance tracker</a> for Kenya and beyond. In partnership with <a href="https://anzenproglobal.com" rel="noopener">Anzenpro Global Consortium Ltd</a>.
 </div></footer>
+<script>
+function cvEffectiveDark(){var r=document.documentElement;return r.classList.contains('cv-dark')||(!r.classList.contains('cv-light')&&window.matchMedia('(prefers-color-scheme: dark)').matches);}
+function cvSyncToggle(){try{var b=document.getElementById('themeToggle');if(b)b.textContent=cvEffectiveDark()?'☀':'☾';}catch(e){}}
+function cvToggleTheme(){try{var r=document.documentElement,next=cvEffectiveDark()?'light':'dark';r.classList.remove('cv-dark','cv-light');r.classList.add(next==='dark'?'cv-dark':'cv-light');r.style.colorScheme=next;try{localStorage.setItem('cv-theme',next);}catch(e){}cvSyncToggle();}catch(e){}}
+cvSyncToggle();
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',cvSyncToggle);}catch(e){}
+</script>
 </body>
 </html>

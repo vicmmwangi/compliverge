@@ -88,12 +88,13 @@ footer.site .wrap{padding:0}
 footer.site a{color:#cfe0f5}
 footer.site a:hover{color:#fff}
 
-/* Dark mode. Default: follow the device / system setting via a pure CSS
-   media query (works with no JavaScript). An explicit "dark" choice saved
-   in the app can also force dark on a light system (html.dark). */
+/* Dark mode.
+   Default: follow the device / system setting (pure CSS media query, no JS).
+   The sun/moon toggle can force dark (html.cv-dark) or force light
+   (html.cv-light), overriding the system setting, and persists per visitor. */
 :root{color-scheme:light}
 @media (prefers-color-scheme: dark){
-  :root{
+  html:not(.cv-light){
     color-scheme:dark;
     --navy:#d6e4f7;--brand:#d6e4f7;--navy-bright:#6fa9e8;--brand-bright:#6fa9e8;--navy-line:#30557f;
     --brand-soft:#17263f;
@@ -101,9 +102,9 @@ footer.site a:hover{color:#fff}
     --canvas:#0a0e16;--white:#151c28;--line:#273243;
     --shadow-sm:0 1px 2px rgba(0,0,0,.55);--shadow-md:0 8px 22px rgba(0,0,0,.6);--shadow-lg:0 24px 56px rgba(0,0,0,.72);
   }
-  header.site{background:rgba(16,20,30,.9);border-bottom-color:var(--line)}
+  html:not(.cv-light) header.site{background:rgba(16,20,30,.9);border-bottom-color:var(--line)}
 }
-html.dark{
+html.cv-dark{
   color-scheme:dark;
   --navy:#d6e4f7;--brand:#d6e4f7;--navy-bright:#6fa9e8;--brand-bright:#6fa9e8;--navy-line:#30557f;
   --brand-soft:#17263f;
@@ -111,7 +112,12 @@ html.dark{
   --canvas:#0a0e16;--white:#151c28;--line:#273243;
   --shadow-sm:0 1px 2px rgba(0,0,0,.55);--shadow-md:0 8px 22px rgba(0,0,0,.6);--shadow-lg:0 24px 56px rgba(0,0,0,.72);
 }
-html.dark header.site{background:rgba(16,20,30,.9);border-bottom-color:var(--line)}
+html.cv-dark header.site{background:rgba(16,20,30,.9);border-bottom-color:var(--line)}
+
+/* Theme toggle button */
+.header-cta{display:flex;align-items:center;gap:10px}
+.themetog{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--radius-sm);background:var(--white);border:1px solid var(--line);color:var(--navy);font-size:17px;line-height:1;cursor:pointer;box-shadow:var(--shadow-sm);transition:.16s;flex-shrink:0;padding:0}
+.themetog:hover{border-color:var(--navy)}
 
 @media(max-width:640px){
   .guide-grid{grid-template-columns:1fr}
