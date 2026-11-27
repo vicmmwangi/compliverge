@@ -88,9 +88,21 @@ footer.site .wrap{padding:0}
 footer.site a{color:#cfe0f5}
 footer.site a:hover{color:#fff}
 
-/* Dark mode — mirrors the app; html.dark is set by the inline theme
-   script (saved theme, or the device/system setting when on auto). */
+/* Dark mode. Default: follow the device / system setting via a pure CSS
+   media query (works with no JavaScript). An explicit "dark" choice saved
+   in the app can also force dark on a light system (html.dark). */
 :root{color-scheme:light}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme:dark;
+    --navy:#d6e4f7;--brand:#d6e4f7;--navy-bright:#6fa9e8;--brand-bright:#6fa9e8;--navy-line:#30557f;
+    --brand-soft:#17263f;
+    --ink:#eaf0f8;--ink-2:#afbacd;--ink-3:#7f8ba0;
+    --canvas:#0a0e16;--white:#151c28;--line:#273243;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.55);--shadow-md:0 8px 22px rgba(0,0,0,.6);--shadow-lg:0 24px 56px rgba(0,0,0,.72);
+  }
+  header.site{background:rgba(16,20,30,.9);border-bottom-color:var(--line)}
+}
 html.dark{
   color-scheme:dark;
   --navy:#d6e4f7;--brand:#d6e4f7;--navy-bright:#6fa9e8;--brand-bright:#6fa9e8;--navy-line:#30557f;
@@ -100,7 +112,6 @@ html.dark{
   --shadow-sm:0 1px 2px rgba(0,0,0,.55);--shadow-md:0 8px 22px rgba(0,0,0,.6);--shadow-lg:0 24px 56px rgba(0,0,0,.72);
 }
 html.dark header.site{background:rgba(16,20,30,.9);border-bottom-color:var(--line)}
-html.dark article{box-shadow:var(--shadow-sm)}
 
 @media(max-width:640px){
   .guide-grid{grid-template-columns:1fr}
